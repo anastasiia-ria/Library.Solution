@@ -70,8 +70,13 @@ An application to track location and status of user’s books in their home libr
 ### Friday, 08/13
 
 - 8:20: research Google Books API (they have different kinds of authorization, and I needed to figure out which one works best for this project).
-- 9:30: research on how to let user either draw their bookshelfs to mark their physical location, or how to drag shelfs and books around.
+- 9:30: research on how to let user either draw their bookshelves to mark their physical location, or how to drag shelves and books around.
 - 10:30: work on proposal
+- 11:00: work on README
+- 11:15: research autocomplete from API in .NET (https://www.encodedna.com/webapi/aspdotnet-webapi-example-autocomplete-text-using-jquery.htm)
+- 12:00: lunch
+- 1:00: research on how to make MVC app live (Azure)
+- 2:00: start working on MVC
 
 ## License
 
