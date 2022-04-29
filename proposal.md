@@ -6,12 +6,12 @@
 
 **MVP Features:** User can create account, add/delete their books, mark their status(finished/in process).
 
-**MVP Teck Stack:** HTML, CSS, JavaScript, ASP.NET MVC, SQL
+**MVP Teck Stack:** HTML, CSS, JavaScript, ASP.NET MVC, MySQL, Razor, Workbench, EF Core
 
 **Stretch Goals:**
 
 1. Adding books from API
-2. Drawing shelfs and “putting” books as they appear in their physical home library for easier search
+2. Drawing shelves and “putting” books as they appear in their physical home library for easier search
 3. Make it mobile friendly
 
 **Additional Teck Stack:** Google Books API, jQuery.
