@@ -76,7 +76,7 @@ An application to track location and status of user’s books in their home libr
 - 11:15: research autocomplete from API in .NET (https://www.encodedna.com/webapi/aspdotnet-webapi-example-autocomplete-text-using-jquery.htm)
 - 12:00: lunch
 - 1:00: research on how to make MVC app live (Azure)
-- 2:00: start working on MVC
+- 2:00: start working on MVP
 
 ## License
 
