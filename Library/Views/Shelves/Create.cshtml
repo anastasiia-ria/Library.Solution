@@ -1,0 +1,19 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Shelf
+
+<h4>Add a new shelf</h4>
+
+@using (Html.BeginForm())
+{
+  @Html.LabelFor(model => model.Name)
+  @Html.TextBoxFor(model => model.Name, new {required = "required" })
+
+  @Html.LabelFor(model => model.Room)
+  @Html.DropDownList("RoomId")
+
+  <input type="submit" class="button" value="Add shelf" class="btn btn-default" />
+}
+<p class="button">@Html.ActionLink("Back to Room", "Details", "Rooms", new { id = @ViewBag.RoomId })</p>

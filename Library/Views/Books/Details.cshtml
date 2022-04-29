@@ -1,0 +1,17 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Book
+
+<h2>Book Details</h2>
+<h3>@Html.DisplayNameFor(model => model.Title): @Html.DisplayFor(model => model.Title)<h3>
+<h3>@Html.DisplayNameFor(model => model.Shelf): @Html.DisplayFor(model => model.Shelf.Name)<h3></h3>
+
+<hr />
+
+<div class="button-group">
+  <p class="button">@Html.ActionLink("Edit Book", "Edit", new { id = Model.BookId })</p>
+  <p class="button">@Html.ActionLink("Delete Book", "Delete", new { id = Model.BookId })</p>
+</div>
+<p class="button">@Html.ActionLink("Back to Shelf", "Details", "Shelves", new { id = Model.Shelf.ShelfId })</p>

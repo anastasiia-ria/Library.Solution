@@ -1,0 +1,28 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Room;
+
+<h1>@Html.DisplayFor(model => model.Name)</h1>
+
+<h3>Shelves</h3>
+
+@if (@Model.Shelves.Count == 0)
+{
+  <h3>No shelves have been added yet!</h3>
+} 
+
+@foreach (var shelf in Model.Shelves)
+{
+  <li>@Html.ActionLink($"{shelf.Name}", "Details", "Shelves", new { id = shelf.ShelfId })</li>
+}
+
+<div class="button-group">
+  <p class="button">@Html.ActionLink("Add shelf", "Create", "Shelves", new { id = Model.RoomId })</p>
+</div>
+<hr />
+<div class="button-group">
+  <p class="button">@Html.ActionLink("Edit Room", "Edit", new { id = Model.RoomId })</p>
+  <p class="button">@Html.ActionLink("Delete Room", "Delete", new { id = Model.RoomId })</p>
+</div>

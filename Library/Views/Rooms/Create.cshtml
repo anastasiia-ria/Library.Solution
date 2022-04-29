@@ -1,0 +1,14 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Room
+
+<h4>Add a new room</h4>
+@using (Html.BeginForm())
+{
+  @Html.LabelFor(model => model.Name)
+  @Html.TextBoxFor(model => model.Name, new {required = "required" })
+
+  <input type="submit" class="button" value="Add room" />
+}

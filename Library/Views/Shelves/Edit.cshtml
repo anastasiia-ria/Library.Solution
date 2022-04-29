@@ -1,0 +1,24 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Shelf
+
+<h2>Edit</h2>
+
+<h4>Edit this shelf: @Html.DisplayFor(model => model.Name)</h4>
+
+@using (Html.BeginForm())
+{
+  @Html.HiddenFor(model => model.ShelfId)
+
+  @Html.LabelFor(model => model.Name)
+  @Html.EditorFor(model => model.Name)
+
+  @Html.LabelFor(model => model.Room)
+  @Html.DropDownList("RoomId")
+
+  <input type="submit" class="button" value="Save" />
+}
+
+<p class="button">@Html.ActionLink("Back to Shelf", "Details", new { id = Model.ShelfId })</p>

@@ -1,0 +1,15 @@
+@{
+  Layout = "_Layout";
+}
+
+@model Library.Models.Shelf
+
+<h2>Are you sure you want to delete this?</h2>
+
+<h3>@Html.DisplayNameFor(model => model.Name): @Html.DisplayFor(model => model.Name)</h3>
+@using (Html.BeginForm())
+{
+  <input type="submit" class="button" value="Delete" />
+}
+
+<p class="button">@Html.ActionLink("Back to Shelf", "Details", new { id = Model.ShelfId })</p>
