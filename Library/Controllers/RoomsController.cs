@@ -3,21 +3,31 @@ using Microsoft.AspNetCore.Mvc;
 using Library.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace Library.Controllers
 {
+  [Authorize]
   public class RoomsController : Controller
   {
     private readonly LibraryContext _db;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public RoomsController(LibraryContext db)
+    public RoomsController(UserManager<ApplicationUser> userManager, LibraryContext db)
     {
+      _userManager = userManager;
       _db = db;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index(int roomId)
     {
-      List<Room> model = _db.Rooms.ToList();
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      ViewBag.PrevRoomId = roomId;
+      List<Room> model = _db.Rooms.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
     }
 
@@ -27,11 +37,17 @@ namespace Library.Controllers
     }
 
     [HttpPost]
-    public ActionResult Create(Room room)
+    public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
     {
+      Room room = new Room() { Name = form["Name"] };
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      room.User = currentUser;
+      Shelf shelf = new Shelf() { Room = room, User = currentUser };
+      _db.Shelves.Add(shelf);
       _db.Rooms.Add(room);
       _db.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction("Index", "Rooms", new { roomId = room.RoomId });
     }
 
     public ActionResult Details(int id)

@@ -1,23 +1,31 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Library.Models;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
+using System.Security.Claims;
 namespace Library.Controllers
 {
+  [Authorize]
   public class ShelvesController : Controller
   {
     private readonly LibraryContext _db;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public ShelvesController(LibraryContext db)
+    public ShelvesController(UserManager<ApplicationUser> userManager, LibraryContext db)
     {
+      _userManager = userManager;
       _db = db;
     }
 
-    public ActionResult Index()
+    public async Task<ActionResult> Index()
     {
-      List<Shelf> model = _db.Shelves.ToList();
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      List<Shelf> model = _db.Shelves.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
     }
 
@@ -27,11 +35,14 @@ namespace Library.Controllers
     }
 
     [HttpPost]
-    public ActionResult Create(Shelf shelf)
+    public async Task<ActionResult> Create(Shelf shelf)
     {
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      shelf.User = currentUser;
       _db.Shelves.Add(shelf);
       _db.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction("Details", "Rooms", new { id = shelf.RoomId });
     }
 
     public ActionResult Details(int id)
