@@ -36,7 +36,15 @@ namespace Library.Controllers
       IdentityResult result = await _userManager.CreateAsync(user, model.Password);
       if (result.Succeeded)
       {
-        return RedirectToAction("Index");
+        Microsoft.AspNetCore.Identity.SignInResult signInResult = await _signInManager.PasswordSignInAsync(model.Email, model.Password, isPersistent: true, lockoutOnFailure: false);
+        if (signInResult.Succeeded)
+        {
+          return RedirectToAction("Index", "Home");
+        }
+        else
+        {
+          return View("Index");
+        }
       }
       else
       {
