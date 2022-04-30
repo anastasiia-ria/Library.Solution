@@ -30,10 +30,12 @@ namespace Library
         .AddDbContext<LibraryContext>(options => options
         .UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
 
+      services.AddDbContext<LibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Security")));
+
       services.AddIdentity<ApplicationUser, IdentityRole>()
               .AddEntityFrameworkStores<LibraryContext>()
               .AddDefaultTokenProviders();
-
+      services.AddScoped<Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>, AppClaimsPrincipalFactory>();
       services.Configure<IdentityOptions>(options =>
       {
         options.Password.RequireDigit = false;
