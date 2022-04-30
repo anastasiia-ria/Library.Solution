@@ -9,11 +9,11 @@
     <h3>Hello @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value)!</h3>
     @using (Html.BeginForm("LogOff", "Account"))
     {
-        <input type="submit" class="button"  class="btn btn-default" value="Log out" />
+        <button type="submit" class="btn btn-light">Log out</button>
     }
 }
 else
 {
-    <p class="button">@Html.ActionLink("Register", "Register")</p>
-    <p class="button">@Html.ActionLink("Log in", "Login")</p>
+    @Html.ActionLink("Register", "Register", null, null, new {@class="btn btn-light"})
+    @Html.ActionLink("Log in", "Login", null, null, new {@class="btn btn-light"})
 }

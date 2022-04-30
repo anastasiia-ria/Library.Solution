@@ -9,6 +9,6 @@
 <h3>@Html.DisplayNameFor(model => model.Name): @Html.DisplayFor(model => model.Name)</h3>
 @using (Html.BeginForm())
 {
-  <input type="submit" class="button" value="Delete" />
+  <button type="submit" class="btn btn-light">Delete</button>
 }
-<p class="button">@Html.ActionLink("Back to Room", "Index", new { id = Model.RoomId })</p>
+@Html.ActionLink("Back to Room", "Index", new { id = Model.RoomId, @class="btn btn-light" })

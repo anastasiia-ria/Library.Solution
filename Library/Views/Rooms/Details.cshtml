@@ -19,10 +19,10 @@
 }
 
 <div class="button-group">
-  <p class="button">@Html.ActionLink("Add shelf", "Create", "Shelves", new { id = Model.RoomId })</p>
+  @Html.ActionLink("Add shelf", "Create", "Shelves", new { id = Model.RoomId, @class="btn btn-light" })
 </div>
 <hr />
 <div class="button-group">
-  <p class="button">@Html.ActionLink("Edit Room", "Edit", new { id = Model.RoomId })</p>
-  <p class="button">@Html.ActionLink("Delete Room", "Delete", new { id = Model.RoomId })</p>
+  @Html.ActionLink("Edit Room", "Edit", new { id = Model.RoomId, @class="btn btn-light" })
+  @Html.ActionLink("Delete Room", "Delete", new { id = Model.RoomId, @class="btn btn-light" })
 </div>

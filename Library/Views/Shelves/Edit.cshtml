@@ -18,7 +18,7 @@
   @Html.LabelFor(model => model.Room)
   @Html.DropDownList("RoomId")
 
-  <input type="submit" class="button" value="Save" />
+  <button type="submit" class="btn btn-light">Save</button>
 }
 
-<p class="button">@Html.ActionLink("Back to Shelf", "Details", new { id = Model.ShelfId })</p>
+@Html.ActionLink("Back to Shelf", "Details", new { id = Model.ShelfId, @class="btn btn-light"})

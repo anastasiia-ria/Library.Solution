@@ -1,9 +1,28 @@
 <header>
-  <div class="header">Library</div>
-  <ul>
-    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-    <li>@Html.ActionLink("Rooms", "Index", "Rooms")</li>
-    <li>@Html.ActionLink("Shelves", "Index", "Shelves")</li>
-    <li>@Html.ActionLink("Books", "Index", "Books")</li>
-  </ul>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="/">Library</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav">
+          @Html.ActionLink("Home", "Index", "Home", null, new {@class="nav-item nav-link active"})
+          @Html.ActionLink("Rooms", "Index", "Rooms", null, new {@class="nav-item nav-link"})
+          @Html.ActionLink("Shelves", "Index", "Shelves", null, new {@class="nav-item nav-link"})
+          @Html.ActionLink("Books", "Index", "Books", null, new {@class="nav-item nav-link"})
+          @if (User.Identity.Name != null)
+          {
+            <a href="@Url.Action("Index", "Account")" title="Account" id="user-name" class="nav-link nav-item">Hello, @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value)!</a>
+          }
+          else
+          {
+            <a href="@Url.Action("Index", "Account")" title="Account" id="account-icon" class="nav-link">
+              <img alt="Account" src="@Url.Content("~/img/account.png")" width="30px"> 
+            </a>
+          }
+        </div>
+      </div>
+    </div>
+  </nav>
 </header>

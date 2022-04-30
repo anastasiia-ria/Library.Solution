@@ -17,6 +17,4 @@
   <li>@Html.ActionLink($"{book.Title}", "Details", new { id = book.BookId }) | @book.Shelf.Name</li>
 }
 
-@if (@ViewBag.ShelfCount > 0) {
-  <p class="button">@Html.ActionLink("Add book", "Create")</p>
-}
+@Html.ActionLink("Add book", "Create", null, null, new {@class="btn btn-light"})

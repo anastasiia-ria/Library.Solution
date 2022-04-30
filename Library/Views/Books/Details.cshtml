@@ -11,7 +11,7 @@
 <hr />
 
 <div class="button-group">
-  <p class="button">@Html.ActionLink("Edit Book", "Edit", new { id = Model.BookId })</p>
-  <p class="button">@Html.ActionLink("Delete Book", "Delete", new { id = Model.BookId })</p>
+  @Html.ActionLink("Edit Book", "Edit", new { id = Model.BookId, @class="btn btn-light" })
+  @Html.ActionLink("Delete Book", "Delete", new { id = Model.BookId, @class="btn btn-light" })
 </div>
-<p class="button">@Html.ActionLink("Back to Shelf", "Details", "Shelves", new { id = Model.Shelf.ShelfId })</p>
+@Html.ActionLink("Back to Shelf", "Details", "Shelves", new { id = Model.Shelf.ShelfId, @class="btn btn-light" })
