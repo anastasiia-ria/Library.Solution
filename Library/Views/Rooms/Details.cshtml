@@ -15,14 +15,43 @@
 
 @foreach (var shelf in Model.Shelves)
 {
-  <li>@Html.ActionLink($"{shelf.Name}", "Details", "Shelves", new { id = shelf.ShelfId })</li>
+  int counter = 1;
+  @foreach (var book in shelf.Books)
+    {
+      <img src="../../wwwroot/img/books/@(counter).png" height="40px">
+    }
+  <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addBook">+</button>
+    @using (Html.BeginForm("Create", "Books", FormMethod.Post, new { id = shelf.RoomId}))
+      {
+        @* @Html.LabelFor(model.Shelf.model => newModel.Title)
+        @Html.TextBoxFor(newModel => newModel.Title, new {required = "required" })
+        @Html.LabelFor(newModel => newModel.Authors)
+        @Html.TextBoxFor(newModel => newModel.Authors, new {required = "required" }) *@
+          <button type="submit" class="btn btn-light">Add</button>
+      }
+
+   @* <form id="addBookForm">
+          <div class="form-group">
+            <input type="text" class="form-control" id="title" placeholder="Title">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" id="author" placeholder="Author">
+          </div>
+          <input type="hidden" id="shelfId" value=@(shelf.ShelfId)>
+          <button type="submit" class="btn btn-light">Add</button>
+        </form> *@
+  @Html.Partial("AddBook.cshtml")
+  <div id=@shelf.ShelfId class="shelf"></div>
 }
 
 <div class="button-group">
-  @Html.ActionLink("Add shelf", "Create", "Shelves", new { id = Model.RoomId, @class="btn btn-light" })
+  @using (Html.BeginForm("Create", "Shelves", FormMethod.Post, new { id = Model.RoomId}))
+  {
+    <button type="submit" class="btn btn-light">Add Shelf</button>
+  }
 </div>
 <hr />
 <div class="button-group">
-  @Html.ActionLink("Edit Room", "Edit", new { id = Model.RoomId, @class="btn btn-light" })
-  @Html.ActionLink("Delete Room", "Delete", new { id = Model.RoomId, @class="btn btn-light" })
+  @Html.ActionLink("Edit Room", "Edit", new { id = Model.RoomId}, new { @class="btn btn-light" })
+  @Html.ActionLink("Delete Room", "Delete", new { id = Model.RoomId}, new { @class="btn btn-light" })
 </div>

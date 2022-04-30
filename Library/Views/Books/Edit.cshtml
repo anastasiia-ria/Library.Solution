@@ -15,10 +15,7 @@
   @Html.LabelFor(model => model.Title)
   @Html.EditorFor(model => model.Title)
 
-  @Html.LabelFor(model => model.ShelfId)
-  @Html.DropDownList("ShelfId")
-
   <button type="submit" class="btn btn-light">Save</button>
 }
 
-@Html.ActionLink("Back to Book", "Details", new { id = Model.BookId, @class="btn btn-light" })
+@Html.ActionLink("Back to Book", "Details", new { id = Model.BookId}, new { @class="btn btn-light" })

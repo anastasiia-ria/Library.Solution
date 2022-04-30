@@ -14,6 +14,9 @@
   @Html.LabelFor(model => model.Shelf)
   @Html.DropDownList("ShelfId")
 
+  @Html.LabelFor(model => model.Room)
+  @Html.DropDownList("RoomId")
+
   <button type="submit" class="btn btn-light">Add book</button>
 }
-@Html.ActionLink("Back to Shelf", "Details", "Shelves", new { id = @ViewBag.ShelfId, @class="btn btn-light" })
+@* @Html.ActionLink("Back to Shelf", "Details", "Shelves", new { id = @ViewBag.ShelfId}, new { @class="btn btn-light" }) *@

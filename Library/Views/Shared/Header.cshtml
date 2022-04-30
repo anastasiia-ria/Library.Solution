@@ -6,9 +6,9 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="navbar-nav">
-          @Html.ActionLink("Home", "Index", "Home", null, new {@class="nav-item nav-link active"})
-          @Html.ActionLink("Rooms", "Index", "Rooms", null, new {@class="nav-item nav-link"})
+        <div class="navbar-nav" id="main-nav">
+          @Html.ActionLink("Home", "Index", "Home", null, new {@class="nav-item nav-link"})
+          @Html.ActionLink("Rooms", "Index", "Rooms", null, new {@class="nav-item nav-link", id="rooms-nav"})
           @Html.ActionLink("Shelves", "Index", "Shelves", null, new {@class="nav-item nav-link"})
           @Html.ActionLink("Books", "Index", "Books", null, new {@class="nav-item nav-link"})
           @if (User.Identity.Name != null)

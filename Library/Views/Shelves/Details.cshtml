@@ -10,7 +10,7 @@
 <hr />
 
 <div class="button-group">
-  @Html.ActionLink("Edit Shelf", "Edit", new { id = Model.ShelfId, @class="btn btn-light" })
-  @Html.ActionLink("Delete Shelf", "Delete", new { id = Model.ShelfId, @class="btn btn-light" })
+  @Html.ActionLink("Edit Shelf", "Edit", new { id = Model.ShelfId}, new { @class="btn btn-light" })
+  @Html.ActionLink("Delete Shelf", "Delete", new { id = Model.ShelfId}, new { @class="btn btn-light" })
 </div>
-@Html.ActionLink("Back to Room", "Details", "Rooms", new { id = Model.Room.RoomId, @class="btn btn-light" })
+@Html.ActionLink("Back to Room", "Details", "Rooms", new { id = Model.Room.RoomId}, new { @class="btn btn-light" })

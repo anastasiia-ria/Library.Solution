@@ -9,12 +9,11 @@
 <h2>Log in with your account</h2>
 <hr />
 @using (Html.BeginForm())
-{
-    @Html.LabelFor(m => m.Email)
-    @Html.TextBoxFor(m => m.Email, new{@class="input"})
-
-    @Html.LabelFor(m => m.Password)
-    @Html.PasswordFor(m => m.Password, new{@class="input"})
-
-    <button type="submit" class="btn btn-default">Log in</button>
+{ <div class="form-group">
+    @Html.TextBoxFor(m => m.Email, new{@class="form-control", @type="text", placeholder="Email"})
+  </div>
+  <div class="form-group">
+    @Html.PasswordFor(m => m.Password, new{@class="form-control", @type="password", placeholder="Password"})
+  </div>
+    <button type="submit" class="btn btn-light">Log in</button>
 }

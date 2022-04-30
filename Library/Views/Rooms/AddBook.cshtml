@@ -1,0 +1,29 @@
+<div class="modal fade" id="addBook-@(ViewData["shelfId"])" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Book</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @using (Html.BeginForm("Create", "Books", FormMethod.Post))
+        {
+          <input type="hidden" name="ShelfId" value="@(ViewData["shelfId"])"/>
+          <input type="hidden" name="RoomId" value="@(ViewData["roomId"])"/>
+
+          <div class="form-group">
+            @Html.TextBox("Title", "", new {required = "required", placeholder="Title", @class="form-control"})
+          </div>
+          <div class="form-group">
+            @Html.TextBox("Authors", "", new {required = "required", placeholder="Authors", @class="form-control"})
+          </div>
+          <button type="submit" class="btn btn-light">Add</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+

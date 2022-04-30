@@ -4,18 +4,48 @@
 
 @using Library.Models;
 
+<div id="@(ViewBag.PrevRoomId)" class="getRoomId"></div>
 <h1>Rooms</h1>
-
-@if (@Model.Count == 0)
-{
-  <h3>No rooms have been added yet!</h3>
-} 
-
-<ul>
-  @foreach(Room room in Model)
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="navbar-nav" id="rooms-nav">
+    @foreach(Room room in Model)
+    {
+      <a class="nav-item nav-link" id="@room.RoomId">@room.Name</a>
+    }
+    @* @Html.ActionLink("+", "Create", null, null, new {@class="nav-item nav-link"}) *@
+    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addRoom">+</button>
+  </div>
+</nav>
+<div id="rooms">
+  @foreach (var room in Model)
   {
-    <li>@Html.ActionLink($"{room.Name}", "Details", new { id = room.RoomId })</li>
+    <div id="room-@(room.RoomId)" class="hidden">
+      @foreach (var shelf in room.Shelves)
+      {
+        int counter = 1;
+        <div id="shelf-@(shelf.ShelfId)" class="shelf">
+          <div class="books">
+            @foreach (var book in shelf.Books)
+            {
+              <img src="~/img/books/@(counter).png" width="15px">
+              if (counter == 8) {
+                counter = 1;
+              } else {
+                counter ++;
+              }
+            }
+          </div>
+          <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addBook-@(shelf.ShelfId)">+</button>
+          @Html.Partial("AddBook.cshtml", new ViewDataDictionary(ViewData){{ "shelfId", shelf.ShelfId }, {"roomId", room.RoomId}})
+          @Html.Partial("AddRoom.cshtml")
+        </div>
+      }
+      @using (Html.BeginForm("Create", "Shelves", FormMethod.Post, new { id = room.RoomId}))
+      {
+        <button type="submit" class="btn btn-light">Add Shelf</button>
+      }
+      @Html.ActionLink("Edit Room", "Edit", new { id = room.RoomId}, new { @class="btn btn-light" })
+      @Html.ActionLink("Delete Room", "Delete", new { id = room.RoomId}, new { @class="btn btn-light" })
+    </div>
   }
-</ul>
-
-@Html.ActionLink("Add room", "Create", null, null, new {@class="btn btn-light"})
+</div>

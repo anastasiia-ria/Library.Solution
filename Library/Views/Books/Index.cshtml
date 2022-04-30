@@ -16,5 +16,4 @@
 {
   <li>@Html.ActionLink($"{book.Title}", "Details", new { id = book.BookId }) | @book.Shelf.Name</li>
 }
-
 @Html.ActionLink("Add book", "Create", null, null, new {@class="btn btn-light"})
