@@ -35,14 +35,15 @@ namespace Library.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(Shelf shelf)
+    public async Task<ActionResult> Create(int id)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      shelf.User = currentUser;
+      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
+      Shelf shelf = new Shelf() { Room = room, User = currentUser };
       _db.Shelves.Add(shelf);
       _db.SaveChanges();
-      return RedirectToAction("Details", "Rooms", new { id = shelf.RoomId });
+      return RedirectToAction("Index", "Rooms", new { roomId = id });
     }
 
     public ActionResult Details(int id)
@@ -63,20 +64,14 @@ namespace Library.Controllers
       _db.SaveChanges();
       return RedirectToAction("Details", new { id = shelf.ShelfId });
     }
-
+    [HttpPost]
     public ActionResult Delete(int id)
     {
       var thisShelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == id);
-      return View(thisShelf);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    public ActionResult DeleteConfirmed(int id)
-    {
-      var thisShelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == id);
+      _db.Books.Where(book => book.Shelf.ShelfId == id).ToList().ForEach(book => book.Shelf = null);
       _db.Shelves.Remove(thisShelf);
       _db.SaveChanges();
-      return RedirectToAction("Index");
+      return RedirectToAction("Index", "Rooms", new { id = thisShelf.RoomId });
     }
 
     [HttpPost]

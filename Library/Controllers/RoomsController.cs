@@ -69,16 +69,23 @@ namespace Library.Controllers
       return RedirectToAction("Details", new { id = room.RoomId });
     }
 
+    [HttpPost]
     public ActionResult Delete(int id)
     {
       var thisRoom = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
-      return View(thisRoom);
-    }
+      var shelvesId = _db.Shelves.Where(shelf => shelf.RoomId == id).Select(shelf => shelf.ShelfId).ToList();
+      foreach (int ShelfId in shelvesId)
+      {
+        _db.Books.Where(book => book.Shelf.ShelfId == ShelfId).ToList().ForEach(book => book.Shelf = null);
+      }
 
-    [HttpPost, ActionName("Delete")]
-    public ActionResult DeleteConfirmed(int id)
-    {
-      var thisRoom = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
+      var shelves = _db.Shelves.Where(shelf => shelf.RoomId == id).ToList();
+      foreach (var shelf in shelves)
+      {
+        _db.Shelves.Remove(shelf);
+      }
+
+      _db.Books.Where(book => book.Room.RoomId == id).ToList().ForEach(book => book.Room = null);
       _db.Rooms.Remove(thisRoom);
       _db.SaveChanges();
       return RedirectToAction("Index");
@@ -88,7 +95,6 @@ namespace Library.Controllers
     public ActionResult Search(string parameter)
     {
       var roomList = _db.Rooms.AsQueryable();
-
       roomList = roomList.Where(room => room.Name.Contains(parameter));
       var search = roomList.ToList();
       ModelState.Clear();

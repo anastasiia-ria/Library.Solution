@@ -51,10 +51,16 @@ namespace Library.Controllers
       _db.SaveChanges();
       return RedirectToAction("Index", "Rooms", new { roomId = room.RoomId });
     }
-    public ActionResult Details(int id)
+    public JsonResult Details(int id)
     {
-      Book thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
-      return View(thisBook);
+      IEnumerable<Book> thisBook = new List<Book>();
+      thisBook = _db.Books.Where(b => b.BookId == id).Select(x =>
+                  new Book()
+                  {
+                    Title = x.Title,
+                    Authors = x.Authors,
+                  });
+      return Json(new { thisBook = thisBook });
     }
     public ActionResult Edit(int id)
     {
