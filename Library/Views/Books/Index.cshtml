@@ -11,9 +11,17 @@
 {
   <h3>No books have been added yet!</h3>
 } 
+<div class="row books-row">
+  @foreach (Book book in Model)
+  {
+    <div class="card" style="width: 13rem;">
+      <img class="card-img-top" src="..." alt="Card image cap">
+      <div class="card-body">
+        <h5 class="card-title">@book.Title</h5>
+        <p class="card-text">@book.Authors</p>
+        <a href="#" class="btn btn-primary">Details</a>
+      </div>
+    </div>
+  }
+</div>
 
-@foreach (Book book in Model)
-{
-  <li>@Html.ActionLink($"{book.Title}", "Details", new { id = book.BookId }) | @book.Shelf.Name</li>
-}
-@Html.ActionLink("Add book", "Create", null, null, new {@class="btn btn-light"})

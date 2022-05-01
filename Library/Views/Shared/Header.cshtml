@@ -5,14 +5,16 @@
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
         <div class="navbar-nav" id="main-nav">
           @Html.ActionLink("Home", "Index", "Home", null, new {@class="nav-item nav-link"})
           @Html.ActionLink("Rooms", "Index", "Rooms", null, new {@class="nav-item nav-link", id="rooms-nav"})
           @Html.ActionLink("Shelves", "Index", "Shelves", null, new {@class="nav-item nav-link"})
           @Html.ActionLink("Books", "Index", "Books", null, new {@class="nav-item nav-link"})
-          @if (User.Identity.Name != null)
-          {
+        </div>
+        <div class="navbar-nav">
+          @if (User.Identity.Name != null)  
+        {
             <a href="@Url.Action("Index", "Account")" title="Account" id="user-name" class="nav-link nav-item">Hello, @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value)!</a>
           }
           else
@@ -22,6 +24,7 @@
             </a>
           }
         </div>
+        
       </div>
     </div>
   </nav>
