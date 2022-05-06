@@ -20,30 +20,28 @@ namespace Library.Models
     public virtual Shelf Shelf { get; set; }
     public virtual Room Room { get; set; }
     public virtual ApplicationUser User { get; set; }
-    public static Book GetBooks(string isbn)
+    public static List<Book> GetBooks(string search, string isbn)
     {
-      var apiCallTask = ApiHelper.GetAll(isbn);
+      var apiCallTask = ApiHelper.GetAll(search, isbn);
       var result = apiCallTask.Result;
-      var resultParse = JValue.Parse(result)["items"][0]["volumeInfo"];
+      // var resultParse = JValue.Parse(result)["items"][0]["volumeInfo"];
+      var resultParse = JValue.Parse(result)["items"];
+      List<Book> bookList = new List<Book>();
 
-      Book book = new Book { Title = resultParse["title"].ToString(), Authors = String.Join(", ", resultParse["authors"].ToObject<string[]>()) };
-      // foreach (KeyValuePair<string, JToken> kvp in resultParse.Children())
-      // {
-      //   if (kvp.Key == "data")
-      //   {
-      //     newResult = (JArray)kvp.Value;
-      //   }
-      // }
+      foreach (var item in resultParse)
+      {
+        var info = item["volumeInfo"];
+        bookList.Add(new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), ImgID = item["id"].ToString() });
+      }
 
-      // List<Book> bookList = JsonConvert.DeserializeObject<List<Book>>(newResult.ToString());
-
-      return book;
+      return bookList;
     }
-    public static Book GetDetails(int id)
+    public static Book GetDetails(string id)
     {
       var apiCallTask = ApiHelper.Get(id);
       var result = apiCallTask.Result;
-
+      Console.WriteLine(result);
+      // bookList.Add(new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), Publisher =  info["publisher"].ToString(), PublishedDate =  info["publishedDate"].ToString(), });
       JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(result);
       Book book = JsonConvert.DeserializeObject<Book>(jsonResponse.ToString());
       return book;

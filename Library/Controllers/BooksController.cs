@@ -23,6 +23,13 @@ namespace Library.Controllers
       _db = db;
     }
 
+    public JsonResult Search(string search, string isbn)
+    {
+      var allBooks = Book.GetBooks(search, isbn);
+      Console.WriteLine(allBooks);
+      return Json(new { Books = allBooks });
+    }
+
     public async Task<ActionResult> Index()
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -31,11 +38,13 @@ namespace Library.Controllers
       return View(model);
     }
 
-    public ActionResult Create()
+    public JsonResult Create(string id)
     {
       ViewBag.ShelfId = new SelectList(_db.Shelves, "ShelfId", "ShelfId");
       ViewBag.RoomId = new SelectList(_db.Rooms, "RoomId", "RoomId");
-      return View();
+      var book = Book.GetDetails(id);
+      Console.WriteLine(book);
+      return Json(new { book = book });
     }
 
     [HttpPost]
