@@ -29,20 +29,25 @@
     $(".delete-shelf").toggle();
   });
 
-  $("#search").on("click", function (event) {
+  $(".button-search").on("click", function (event) {
     event.preventDefault();
 
     $("#search").prev().hide();
     $("#search-results").empty();
-    let search = $("#general").val();
+    let general = $("#general").val();
+    let title = $("#title").val();
+    let authors = $("#authors").val();
+    let publisher = $("#publisher").val();
+    let isbn = $("#isbn").val();
+    console.log(general);
     $.ajax({
       type: "GET",
       url: "../../Books/Search",
-      data: { search: search },
+      data: { general: general, title: title, authors: authors, publisher: publisher, isbn: isbn },
       success: function (result) {
         result.books.forEach(function (book) {
           $("#search-results").append(`<div class="card">
-            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
             <div class="card-body">
               <h5 class="card-title">${book.title}</h5>
               <p class="card-text">${book.authors}</p>
@@ -52,7 +57,9 @@
         });
       },
       error: function () {
-        $("#search").prev().show();
+        var search = document.getElementById("search");
+        search.setCustomValidity("Your search did not match any books. Please, try different keywords.");
+        search.reportValidity();
         $("#general").val("");
       },
     });
@@ -60,7 +67,7 @@
   $(document).on("click", ".add-book-from-search", function (event) {
     event.preventDefault();
     $("#add-book-form").show();
-    $("#search-section").hide();
+    $("#search-results").hide();
     let id = $(this).attr("id");
     console.log("here id is " + id);
     $.ajax({
@@ -81,17 +88,21 @@
       },
     });
   });
+  $(document).on("click", "#advanced-search", function (event) {
+    event.preventDefault();
+    $("#advanced-search-form").slideDown();
+  });
   $(document).on("click", "#start-search", function (event) {
     event.preventDefault();
     $("#search").prev().hide();
     $.ajax({
       type: "GET",
       url: "../../Books/Search",
-      data: { search: "Programming" },
+      data: { general: "Programming" },
       success: function (result) {
         result.books.forEach(function (book) {
           $("#search-results").append(`<div class="card">
-            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
             <div class="card-body">
               <h5 class="card-title">${book.title}</h5>
               <p class="card-text">${book.authors}</p>

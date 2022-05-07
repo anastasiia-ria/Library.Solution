@@ -1,0 +1,91 @@
+<div class="modal fade" id="addBookFromApi" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Add Book</h5>
+        <div class="search-title">
+          <form class="col-auto">
+            <div class="input-group mb-2">
+              <input type="text" class="form-control" id="general" placeholder="Search" required>
+              <div class="input-group-append">
+                <button class="input-group-text button-search" type="submit" id="search"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+          <p id="advanced-search">Advanced Search</p>
+        </div>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-header" id="advanced-search-form">
+        <div class="advanced-search-inputs">
+          <input class="form-control" type="text" id="title" placeholder="Title"> 
+          <input class="form-control" type="text" id="authors" placeholder="Authors">
+          <input class="form-control" type="text" id="piblisher" placeholder="Publisher"> 
+          <input class="form-control" type="text" id="isbn" placeholder="ISBN"> 
+          <button class="input-group-text button-search" type="submit"><i class="fa fa-search"></i></button>
+        </div>
+        
+      </div>
+      <div class="modal-body">
+        <div id="search-results" class="row books-row"></div>
+        <div id="add-book-form">
+        @using (Html.BeginForm("Create", "Books", FormMethod.Post))
+              {
+                <input type="hidden" name="ImgID"/>
+                <div class="form-row">
+                  <div class="col">
+                    <label>Title</label>
+                    @Html.TextBox("Title", "", new {required = "required", placeholder="Title", @class="form-control"})
+                  </div>
+                  <div class="col">
+                    <label>Authors</label>
+                    @Html.TextBox("Authors", "", new {required = "required", placeholder="Authors", @class="form-control"})
+                  </div>
+                </div>
+                <div class="form-group">
+                  <Label>Description</Label>
+                  @Html.TextBox("Description", "", new {placeholder="Description", @class="form-control"})
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <label>Publisher</label>
+                    @Html.TextBox("Publisher", "", new {placeholder="Publisher", @class="form-control"})
+                  </div>
+                  <div class="col">
+                    <label>Published Date</label>
+                    @Html.TextBox("PublishedDate", "", new {placeholder="Published Date", @class="form-control"})
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <label>ISBN 10</label>
+                    @Html.TextBox("ISBN_10", "", new {placeholder="ISBN 10", @class="form-control"})
+                  </div>
+                  <div class="col">
+                    <label>ISBN 13</label>
+                    @Html.TextBox("ISBN_13", "", new {placeholder="ISBN 13", @class="form-control"})
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="col">
+                    <label>Status</label>
+                      <select class="custom-select" name="Status">
+                        <option value="Not Started">Not Started</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Finished">Finished</option>
+                      </select>
+                  </div>
+                  <div class="col">
+                    <label>Page Count</label>
+                    @Html.TextBox("PageCount", "", new {placeholder="Page Count", @class="form-control"})
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-light">Add</button>
+              }
+      </div>
+      </div>
+    </div>
+  </div>
+</div>

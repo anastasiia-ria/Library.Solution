@@ -20,30 +20,28 @@ namespace Library.Models
     public virtual Shelf Shelf { get; set; }
     public virtual Room Room { get; set; }
     public virtual ApplicationUser User { get; set; }
-    public static List<Book> GetBooks(string search, string isbn)
+    public static List<Book> GetBooks(string general, string title, string authors, string publisher, string isbn)
     {
-      var apiCallTask = ApiHelper.GetAll(search, isbn);
+      var apiCallTask = ApiHelper.GetAll(general, title, authors, publisher, isbn);
       var result = apiCallTask.Result;
-      // var resultParse = JValue.Parse(result)["items"][0]["volumeInfo"];
-      var resultParse = JValue.Parse(result)["items"];
+      var resultParse = JObject.Parse(result)["items"];
       List<Book> bookList = new List<Book>();
-
       foreach (var item in resultParse)
       {
-        var info = item["volumeInfo"];
-        bookList.Add(new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), ImgID = item["id"].ToString() });
+        JObject info = item["volumeInfo"].ToObject<JObject>();
+        var Title = info.ContainsKey("title") ? info["title"].ToString() : "";
+        var Authors = info.ContainsKey("authors") ? String.Join(", ", info["authors"].ToObject<string[]>()) : "";
+        bookList.Add(new Book { Title = Title, Authors = Authors, ImgID = item["id"].ToString() });
       }
-
       return bookList;
     }
     public static Book GetDetails(string id)
     {
       var apiCallTask = ApiHelper.Get(id);
       var result = apiCallTask.Result;
-      Console.WriteLine(result);
-      // bookList.Add(new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), Publisher =  info["publisher"].ToString(), PublishedDate =  info["publishedDate"].ToString(), });
-      JObject jsonResponse = JsonConvert.DeserializeObject<JObject>(result);
-      Book book = JsonConvert.DeserializeObject<Book>(jsonResponse.ToString());
+      var resultParse = JValue.Parse(result);
+      var info = resultParse["volumeInfo"];
+      Book book = new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), Publisher = info["publisher"].ToString(), PublishedDate = info["publishedDate"].ToString(), Description = info["description"].ToString(), ISBN_10 = info["industryIdentifiers"][1]["identifier"].ToString(), ISBN_13 = info["industryIdentifiers"][0]["identifier"].ToString(), PageCount = info["pageCount"].ToString(), ImgID = resultParse["id"].ToString() };
       return book;
     }
     public static void Post(Book book)

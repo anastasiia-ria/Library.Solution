@@ -83,16 +83,12 @@
   }
 }
 
-.error {
-  display: none;
-  color: red;
-}
-
 .form-row {
   margin-bottom: 1rem;
 }
 
-#add-book-form {
+#add-book-form,
+#advanced-search-form {
   display: none;
 }
 
@@ -114,3 +110,29 @@
     max-width: 1000px;
   }
 }
+
+.search-title {
+  display: flex;
+  align-items: flex-end;
+}
+
+#advanced-search {
+  cursor: pointer;
+  text-decoration: underline;
+  color: rgb(118, 118, 118);
+}
+.card-img-top {
+  object-fit: contain;
+  height: 14rem;
+}
+
+.advanced-search-inputs {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+}
+
+/* #advanced-search-form .form-control {
+  width: 14rem;
+  display: inline-block;
+} */

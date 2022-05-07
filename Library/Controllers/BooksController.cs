@@ -23,9 +23,10 @@ namespace Library.Controllers
       _db = db;
     }
 
-    public JsonResult Search(string search, string isbn)
+    public JsonResult Search(string general, string title, string authors, string publisher, string isbn)
     {
-      var allBooks = Book.GetBooks(search, isbn);
+      Console.WriteLine(general);
+      var allBooks = Book.GetBooks(general, title, authors, publisher, isbn);
       Console.WriteLine(allBooks);
       return Json(new { Books = allBooks });
     }
