@@ -20,9 +20,9 @@ namespace Library.Models
     public virtual Shelf Shelf { get; set; }
     public virtual Room Room { get; set; }
     public virtual ApplicationUser User { get; set; }
-    public static List<Book> GetBooks(string general, string title, string authors, string publisher, string isbn)
+    public static object[] GetBooks(string general, string title, string authors, string publisher, string isbn, int startIndex)
     {
-      var apiCallTask = ApiHelper.GetAll(general, title, authors, publisher, isbn);
+      var apiCallTask = ApiHelper.GetAll(general, title, authors, publisher, isbn, startIndex);
       var result = apiCallTask.Result;
       var resultParse = JObject.Parse(result)["items"];
       List<Book> bookList = new List<Book>();
@@ -33,7 +33,8 @@ namespace Library.Models
         var Authors = info.ContainsKey("authors") ? String.Join(", ", info["authors"].ToObject<string[]>()) : "";
         bookList.Add(new Book { Title = Title, Authors = Authors, ImgID = item["id"].ToString() });
       }
-      return bookList;
+      object[] array = { bookList, JObject.Parse(result)["totalItems"].ToString() };
+      return array;
     }
     public static Book GetDetails(string id)
     {

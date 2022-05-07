@@ -23,16 +23,20 @@ namespace Library.Controllers
       _db = db;
     }
 
-    public JsonResult Search(string general, string title, string authors, string publisher, string isbn)
+    public JsonResult Search(string general, string title, string authors, string publisher, string isbn, int startIndex)
     {
       Console.WriteLine(general);
-      var allBooks = Book.GetBooks(general, title, authors, publisher, isbn);
+      var array = Book.GetBooks(general, title, authors, publisher, isbn, startIndex);
+      var size = array[1];
+      var allBooks = array[0];
       Console.WriteLine(allBooks);
-      return Json(new { Books = allBooks });
+      Console.WriteLine(size);
+      return Json(new { Books = allBooks, Size = size });
     }
 
     public async Task<ActionResult> Index()
     {
+      ViewBag.Pagination = new Pagination();
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).ToList();
