@@ -45,9 +45,9 @@
 }
 
 .books-row {
-  justify-content: space-around;
+  justify-content: flex-start;
   gap: 15px;
-  max-width: 1000px;
+  /* max-width: 1000px; */
   margin: auto;
 }
 
@@ -96,17 +96,23 @@
 }
 
 #add-book-form,
-#advanced-search-form {
+#advanced-search-form,
+#pagination {
   display: none;
 }
 
+#add-book-form form {
+  max-width: 600px;
+  margin: auto;
+}
 #search-results {
-  min-height: 70vh;
+  max-width: 941px;
 }
 
-#search-results > .card {
+.card {
   width: 14rem;
   font-size: 80% !important;
+  max-height: 365px;
 }
 
 #search-results h5 {
@@ -116,6 +122,10 @@
 @media (min-width: 992px) {
   .modal-lg {
     max-width: 1000px;
+  }
+
+  #addBookFromApi .modal-content {
+    min-height: 924px;
   }
 }
 
@@ -159,4 +169,8 @@
   padding-top: 5%;
   width: 100%;
   margin: auto;
+}
+
+#back-to-search {
+  position: absolute;
 }

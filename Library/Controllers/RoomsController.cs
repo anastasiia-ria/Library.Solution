@@ -27,6 +27,7 @@ namespace Library.Controllers
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       ViewBag.PrevRoomId = roomId;
+      ViewBag.Books = _db.Books.Where(book => book.User == currentUser).ToList();
       List<Room> model = _db.Rooms.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
     }

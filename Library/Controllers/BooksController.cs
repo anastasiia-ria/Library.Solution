@@ -34,12 +34,28 @@ namespace Library.Controllers
       return Json(new { Books = allBooks, Size = size });
     }
 
-    public async Task<ActionResult> Index()
+    public async Task<ActionResult> Index(int page)
     {
-      ViewBag.Pagination = new Pagination();
+      int count = _db.Books.Count();
+      int perPage = 2;
+      int maxPage = (int)Math.Ceiling(((double)count) / perPage);
+      int Page = 1;
+      if (page == 0)
+      {
+        Page = 1;
+      }
+      else if (page > maxPage)
+      {
+        Page = maxPage;
+      }
+      else
+      {
+        Page = page;
+      }
+      ViewBag.Page = Page;
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).ToList();
+      List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).Skip(perPage * (Page - 1)).Take(perPage).ToList();
       return View(model);
     }
 
@@ -54,31 +70,31 @@ namespace Library.Controllers
     [HttpPost]
     public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
     {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgId"] };
-      book.User = currentUser;
-      _db.Books.Add(book);
-      _db.SaveChanges();
+      if (!_db.Books.Any(book => book.ImgID == form["ImgID"].ToString()))
+      {
+        var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var currentUser = await _userManager.FindByIdAsync(userId);
+        Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgID"] };
+        book.User = currentUser;
+        _db.Books.Add(book);
+        _db.SaveChanges();
+      }
       return RedirectToAction("Index");
     }
     [HttpPost]
-    public async Task<ActionResult> AddLocation(Microsoft.AspNetCore.Http.IFormCollection form)
+    public ActionResult AddLocation(int id, int shelfId, int roomId)
     {
-      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-      var currentUser = await _userManager.FindByIdAsync(userId);
-      Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == Int32.Parse(form["ShelfId"]));
-      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == Int32.Parse(form["RoomId"]));
-      Book book = new Book { Title = form["Title"], Authors = form["Authors"], Shelf = shelf, Room = room };
-      book.User = currentUser;
-      _db.Books.Add(book);
+      Book book = _db.Books.FirstOrDefault(book => book.BookId == id);
+      Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == shelfId);
+      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == roomId);
+      book.Shelf = shelf;
+      book.Room = room;
       _db.SaveChanges();
-      return RedirectToAction("Index", "Rooms", new { roomId = room.RoomId });
+      return RedirectToAction("Index", "Rooms", new { roomId = roomId });
     }
     public JsonResult Details(int id)
     {
-      // IEnumerable<Book> thisBook = new List<Book>();
-      Book thisBook = _db.Books.FirstOrDefault(b => b.BookId == id);
+      Book thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
       return Json(new { thisBook = thisBook });
     }
     public ActionResult Edit(int id)

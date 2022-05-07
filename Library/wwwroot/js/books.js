@@ -5,7 +5,7 @@
   this.publisher = "";
   this.isbn = "";
   this.startIndex = 0;
-  this.size = 8;
+  this.size = 0;
 };
 
 Search.prototype.clear = function () {
@@ -15,7 +15,7 @@ Search.prototype.clear = function () {
   this.publisher = "";
   this.isbn = "";
   this.startIndex = 0;
-  this.size = 8;
+  this.size = 0;
 };
 
 let search = new Search();
@@ -26,8 +26,9 @@ function searchAPI(search) {
     url: "../../Books/Search",
     data: { general: search.general, title: search.title, authors: search.authors, publisher: search.publisher, isbn: search.isbn, startIndex: search.startIndex },
     success: function (result) {
+      console.log(result);
       search.size = result.size;
-      result.books.forEach(function (book) {
+      result.books["$values"].forEach(function (book) {
         $("#search-results").append(`<div class="card">
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
           <div class="card-body">
@@ -40,43 +41,16 @@ function searchAPI(search) {
     },
     error: function () {
       var search = document.getElementById("search");
+      $("#advanced-search-form input").val("");
+      $(".search-title input").val("");
+      $("#pagination").hide();
       search.setCustomValidity("Your search did not match any books. Please, try different keywords.");
       search.reportValidity();
-      $("#general").val("");
     },
   });
 }
 
 $(document).ready(function () {
-  $("#rooms").children().first().removeClass("hidden");
-  $("#rooms-nav > a").first().addClass("active");
-  $("#rooms-nav > a").on("click", function () {
-    $("#rooms > div").addClass("hidden");
-    $("#rooms-nav > a").removeClass("active");
-    $(this).addClass("active");
-    let id = $(this).attr("id").slice(10);
-    $(`#room-${id}`).removeClass("hidden");
-  });
-  let roomId = $(".getRoomId").attr("id");
-  if (roomId != 0) {
-    $("#rooms > div").addClass("hidden");
-    $(`#room-${roomId}`).removeClass("hidden");
-  }
-  $(".books > img").click(function () {
-    let id = parseInt($(this).attr("id").slice(5));
-    $.ajax({
-      type: "GET",
-      url: "../../Books/Details",
-      data: { id: id },
-      success: function (result) {
-        $("#book-title").text(book.title);
-        $("#book-authors").text(book.authors);
-      },
-    });
-  });
-  $("#edit-room").click(function () {
-    $(".delete-shelf").toggle();
-  });
   $("#edit-books").click(function () {
     $(".delete-book").toggle();
   });
@@ -131,13 +105,14 @@ $(document).ready(function () {
 
   $(document).on("click", "#advanced-search", function (event) {
     event.preventDefault();
-    $("#advanced-search-form").slideDown();
+    $("#advanced-search-form").slideToggle();
   });
 
   $(document).on("click", "#start-search", function (event) {
     event.preventDefault();
     $("#search-results").empty();
     $("#search").prev().hide();
+    $("#pagination").show();
     search.clear();
     search.general = "programming";
     searchAPI(search);
@@ -186,7 +161,14 @@ $(document).ready(function () {
     if (search.startIndex >= 8) {
       $("#page-prev").parent().removeClass("disabled");
     }
-
+    searchAPI(search);
+  });
+  $("#back-to-search").click(function () {
+    $("#add-book-form").hide();
+    $("#search-results").show();
+    $("#pagination").show();
+    $("#search-results").empty();
+    $("#add-book-form input").val("");
     searchAPI(search);
   });
 });

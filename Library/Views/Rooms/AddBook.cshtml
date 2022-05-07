@@ -1,5 +1,6 @@
+@using Library.Models;
 <div class="modal fade" id="addBook-@(ViewData["shelfId"])" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">Add Book</h5>
@@ -8,25 +9,26 @@
         </button>
       </div>
       <div class="modal-body">
-        @using (Html.BeginForm("Create", "Books", FormMethod.Post))
-        {
-          <input type="hidden" name="ShelfId" value="@(ViewData["shelfId"])"/>
-          <input type="hidden" name="RoomId" value="@(ViewData["roomId"])"/>
-
-          <div class="form-group">
-            @Html.TextBox("Title", "", new {required = "required", placeholder="Title", @class="form-control"})
-          </div>
-          <div class="form-group">
-            @Html.TextBox("Authors", "", new {required = "required", placeholder="Authors", @class="form-control"})
-          </div>
-          <div class="form-group">
-            @Html.TextBox("Publisher", "", new {required = "required", placeholder="Publisher", @class="form-control"})
-          </div>
-          <div class="form-group">
-            @Html.TextBox("PublishedDate", "", new {required = "required", placeholder="Published Date", @class="form-control"})
-          </div>
-          <button type="submit" class="btn btn-light">Add</button>
-        }
+        <div class="row books-row">
+          @foreach (Book book in @ViewBag.Books)
+          {
+            <div class="card">
+              @using (Html.BeginForm("Delete", "Books", new { id = book.BookId},FormMethod.Post ))
+              {
+                <button type="submit" class="btn btn-light delete-book">x</button>
+              }
+              <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+              <div class="card-body">
+                <h5 class="card-title cut-text">@book.Title</h5>
+                <p class="card-text cut-text">@book.Authors</p>
+                @using (Html.BeginForm("AddLocation", "Books", new { id = book.BookId, shelfId = ViewData["shelfId"], roomId = ViewData["roomId"]},FormMethod.Post ))
+                {
+                  <button class="btn btn-light" type="submit">Add</button>
+                }
+              </div>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>

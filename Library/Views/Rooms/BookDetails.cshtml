@@ -1,17 +1,30 @@
-@* <div class="modal fade" id="bookDetails" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal fade" id="bookDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="book-title"></h5>
+        <h5 class="modal-title">Book Details</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <h5 id="book-authors"></h3>
+        <div class="row">
+          <div class="col">
+            <img id="book-img" alt="Book Thumbnail">
+          </div>
+          <div class="col">
+            <h2 id="book-title"></h2>
+            <h4 id="book-authors"></h4>
+            <h6>Published by <span id="book-publisher"></span></h6>
+            <h6>Published Date: <span id="book-publishedDate"></span></h6>
+            <h6>Page Count: <span id="book-pageCount"></span></h6>
+            <h6>ISBN 10: <span id="book-isbn10"></span></h6>
+            <h6>ISBN 13: <span id="book-isbn13"></span></h6>
+          </div>
+        </div>
+        <div class="row" id="book-description">
+        </div>
       </div>
     </div>
   </div>
 </div>
-
- *@

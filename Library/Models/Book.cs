@@ -41,8 +41,28 @@ namespace Library.Models
       var apiCallTask = ApiHelper.Get(id);
       var result = apiCallTask.Result;
       var resultParse = JValue.Parse(result);
-      var info = resultParse["volumeInfo"];
-      Book book = new Book { Title = info["title"].ToString(), Authors = String.Join(", ", info["authors"].ToObject<string[]>()), Publisher = info["publisher"].ToString(), PublishedDate = info["publishedDate"].ToString(), Description = info["description"].ToString(), ISBN_10 = info["industryIdentifiers"][1]["identifier"].ToString(), ISBN_13 = info["industryIdentifiers"][0]["identifier"].ToString(), PageCount = info["pageCount"].ToString(), ImgID = resultParse["id"].ToString() };
+      var info = resultParse["volumeInfo"].ToObject<JObject>();
+      var Title = info.ContainsKey("title") ? info["title"].ToString() : "";
+      var Authors = info.ContainsKey("authors") ? String.Join(", ", info["authors"].ToObject<string[]>()) : "";
+      var Publisher = info.ContainsKey("publisher") ? info["title"].ToString() : "";
+      var PublishedDate = info.ContainsKey("publishedDate") ? info["title"].ToString() : "";
+      var Description = info.ContainsKey("description") ? info["title"].ToString() : "";
+      var Identifiers = info.ContainsKey("industryIdentifiers") ? info["industryIdentifiers"] : new JArray();
+      var ISBN_10 = "";
+      var ISBN_13 = "";
+      var first = Identifiers[0].ToObject<JObject>();
+      if (first.ContainsKey("type") && first["type"].ToString() == "ISBN_10")
+      {
+        ISBN_10 = first.ContainsKey("identifier") ? Identifiers[0]["identifier"].ToString() : "";
+        ISBN_13 = Identifiers[1].ToObject<JObject>().ContainsKey("identifier") ? Identifiers[1]["identifier"].ToString() : "";
+      }
+      else
+      {
+        ISBN_13 = first.ContainsKey("identifier") ? Identifiers[0]["identifier"].ToString() : "";
+        ISBN_10 = Identifiers[1].ToObject<JObject>().ContainsKey("identifier") ? Identifiers[1]["identifier"].ToString() : "";
+      }
+      Console.WriteLine(Identifiers);
+      Book book = new Book { Title = Title, Authors = Authors, Publisher = Publisher, PublishedDate = PublishedDate, Description = Description, ISBN_10 = info["industryIdentifiers"][1]["identifier"].ToString(), ISBN_13 = info["industryIdentifiers"][0]["identifier"].ToString(), PageCount = info["pageCount"].ToString(), ImgID = resultParse["id"].ToString() };
       return book;
     }
     public static void Post(Book book)
