@@ -1,14 +1,116 @@
-﻿.btn-light,
+﻿.container {
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.btn-light,
 .btn-light:hover {
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 .footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   height: 60px;
   line-height: 60px;
   background-color: #f5f5f5;
   text-align: center;
+}
+
+.shelf {
+  height: 105px;
+  width: 200px;
+  border-bottom: 5px solid brown;
+  margin: 20px 10px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.books {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+}
+.hidden {
+  display: none;
+}
+
+#user-name,
+#account-icon {
+  float: right;
+}
+
+.books-row {
+  justify-content: space-between;
+  gap: 15px;
+  max-width: 1000px;
+  margin: auto;
+}
+
+.delete-shelf {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  padding: 0.05rem 0.45rem;
+  display: none;
+  animation: tilt-shaking 0.3s infinite;
+}
+
+#edit-room {
+  position: absolute;
+  right: 2rem;
+  top: 1rem;
+}
+
+@keyframes tilt-shaking {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(0eg);
+  }
+  75% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.error {
+  display: none;
+  color: red;
+}
+
+.form-row {
+  margin-bottom: 1rem;
+}
+
+#add-book-form {
+  display: none;
+}
+
+#search-results {
+  min-height: 80vh;
+}
+
+#search-results > .card {
+  width: 14rem;
+  font-size: 80% !important;
+}
+
+#search-results h5 {
+  font-size: 1rem;
+}
+
+@media (min-width: 992px) {
+  .modal-lg {
+    max-width: 1000px;
+  }
 }

@@ -31,6 +31,8 @@
 
   $("#search").on("click", function (event) {
     event.preventDefault();
+
+    $("#search").prev().hide();
     $("#search-results").empty();
     let search = $("#general").val();
     $.ajax({
@@ -44,27 +46,56 @@
             <div class="card-body">
               <h5 class="card-title">${book.title}</h5>
               <p class="card-text">${book.authors}</p>
-              <buttton id="${book.imgID}" class="btn btn-light add-book-from-search">Add</button>
+              <button type="button" id="${book.imgID}" class="btn btn-light add-book-from-search">Add</button>
+            </div>
+          </div>`);
+        });
+      },
+      error: function () {
+        $("#search").prev().show();
+        $("#general").val("");
+      },
+    });
+  });
+  $(document).on("click", ".add-book-from-search", function (event) {
+    event.preventDefault();
+    let id = $(this).attr("id");
+    console.log("here id is " + id);
+    $.ajax({
+      type: "GET",
+      url: "../../Books/Create",
+      data: { id: id },
+      success: function (result) {
+        console.log(result.book);
+        $("input[name='Title']").val(result.book.title);
+        $("input[name='Authors']").val(result.book.authors);
+        $("input[name='Publisher']").val(result.book.publisher);
+        $("input[name='PublishedDate']").val(result.book.publishedDate);
+        $("input[name='ISBN_10']").val(result.book.isbn_10);
+        $("input[name='ISBN_13']").val(result.book.isbn_13);
+        $("input[name='PageCount']").val(result.book.pageCount);
+      },
+    });
+  });
+  $(document).on("click", "#start-search", function (event) {
+    event.preventDefault();
+    $("#search").prev().hide();
+    $.ajax({
+      type: "GET",
+      url: "../../Books/Search",
+      data: { search: "Programming" },
+      success: function (result) {
+        result.books.forEach(function (book) {
+          $("#search-results").append(`<div class="card">
+            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+            <div class="card-body">
+              <h5 class="card-title">${book.title}</h5>
+              <p class="card-text">${book.authors}</p>
+              <button type="button" id="${book.imgID}" class="btn btn-light add-book-from-search">Add</button>
             </div>
           </div>`);
         });
       },
     });
-  });
-  $(".add-book-from-search").on("click", function (event) {
-    event.preventDefault();
-    let id = $(this).attr("id");
-    console.log("here id is " + id);
-    // $.ajax({
-    //   type: "GET",
-    //   url: "../../Books/Create",
-    //   data: { id: id },
-    //   success: function (result) {
-    //     $("#title-input").val() = result.book.title;
-    //     $("#authors-input").val() = result.book.authors;
-    //     $("#publisher-input").val() = result.book.publisher;
-    //     $("#published-date-input").val() = result.book.published-date;
-    //   },
-    // });
   });
 });
