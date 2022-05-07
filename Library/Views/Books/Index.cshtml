@@ -16,12 +16,12 @@
 <div class="row books-row">
   @foreach (Book book in Model)
   {
-    <div class="card" style="width: 13rem;">
-      <img class="card-img-top" src="..." alt="Card image cap">
+    <div class="card" style="width:16rem;">
+      <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
       <div class="card-body">
         <h5 class="card-title">@book.Title</h5>
         <p class="card-text">@book.Authors</p>
-        <a href="#" class="btn btn-primary">Details</a>
+        <a href="#" class="btn btn-light">Details</a>
       </div>
     </div>
   }
@@ -36,13 +36,19 @@
         </button>
       </div>
       <div class="modal-body">
-        <input class="form-control" id="general" type="text"/>
-        <p class="error">Your search did not match any books. Please, try different keywords.</p>
-        <button class="btn btn-light" type="button" id="search">Search</button>
-        <div id="search-results" class="row books-row"></div>
+        <div id="search-section">
+          <div class="form-inline">
+            <input class="form-control" id="general" type="text"/>
+            <p class="error">Your search did not match any books. Please, try different keywords.</p>
+            <button class="btn btn-light" type="button" id="search">Search</button>
+          </div>
+          <div id="search-results" class="row books-row"></div>
+        </div>
+        
         <div id="add-book-form">
         @using (Html.BeginForm("Create", "Books", FormMethod.Post))
               {
+                <input type="hidden" name="ImgID"/>
                 <div class="form-row">
                   <div class="col">
                     <label>Title</label>

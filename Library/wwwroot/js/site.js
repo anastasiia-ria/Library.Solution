@@ -41,8 +41,8 @@
       data: { search: search },
       success: function (result) {
         result.books.forEach(function (book) {
-          $("#search-results").append(`<div class="card" style="width: 15rem;">
-            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" width="auto">
+          $("#search-results").append(`<div class="card">
+            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
             <div class="card-body">
               <h5 class="card-title">${book.title}</h5>
               <p class="card-text">${book.authors}</p>
@@ -59,6 +59,8 @@
   });
   $(document).on("click", ".add-book-from-search", function (event) {
     event.preventDefault();
+    $("#add-book-form").show();
+    $("#search-section").hide();
     let id = $(this).attr("id");
     console.log("here id is " + id);
     $.ajax({
@@ -69,11 +71,13 @@
         console.log(result.book);
         $("input[name='Title']").val(result.book.title);
         $("input[name='Authors']").val(result.book.authors);
+        $("input[name='Description']").val(result.book.description);
         $("input[name='Publisher']").val(result.book.publisher);
         $("input[name='PublishedDate']").val(result.book.publishedDate);
-        $("input[name='ISBN_10']").val(result.book.isbn_10);
-        $("input[name='ISBN_13']").val(result.book.isbn_13);
+        $("input[name='ISBN_10']").val(result.book.isbN_10);
+        $("input[name='ISBN_13']").val(result.book.isbN_13);
         $("input[name='PageCount']").val(result.book.pageCount);
+        $("input[name='ImgID']").val(result.book.imgID);
       },
     });
   });

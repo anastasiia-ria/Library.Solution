@@ -43,12 +43,22 @@ namespace Library.Controllers
       ViewBag.ShelfId = new SelectList(_db.Shelves, "ShelfId", "ShelfId");
       ViewBag.RoomId = new SelectList(_db.Rooms, "RoomId", "RoomId");
       var book = Book.GetDetails(id);
-      Console.WriteLine(book);
       return Json(new { book = book });
     }
 
     [HttpPost]
     public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
+    {
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgId"] };
+      book.User = currentUser;
+      _db.Books.Add(book);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+    [HttpPost]
+    public async Task<ActionResult> AddLocation(Microsoft.AspNetCore.Http.IFormCollection form)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
