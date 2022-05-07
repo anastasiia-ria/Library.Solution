@@ -14,7 +14,7 @@ namespace Library.Models
       var Publisher = String.IsNullOrEmpty(publisher) ? "" : $"+inpublisher:{publisher}";
       var ISBN = String.IsNullOrEmpty(isbn) ? "" : $"+isbn:{isbn}";
       RestClient client = new RestClient($"https://www.googleapis.com/books/v1/");
-      RestRequest request = new RestRequest($"volumes?q={General}{Title}{Authors}{Publisher}{ISBN}", Method.GET);
+      RestRequest request = new RestRequest($"volumes?q={General}{Title}{Authors}{Publisher}{ISBN}&maxResults=8", Method.GET);
       var response = await client.ExecuteTaskAsync(request);
       Console.WriteLine($"volumes?q={General}{Title}{Authors}{Publisher}{ISBN}");
       return response.Content;

@@ -73,13 +73,8 @@ namespace Library.Controllers
     }
     public JsonResult Details(int id)
     {
-      IEnumerable<Book> thisBook = new List<Book>();
-      thisBook = _db.Books.Where(b => b.BookId == id).Select(x =>
-                  new Book()
-                  {
-                    Title = x.Title,
-                    Authors = x.Authors,
-                  });
+      // IEnumerable<Book> thisBook = new List<Book>();
+      Book thisBook = _db.Books.FirstOrDefault(b => b.BookId == id);
       return Json(new { thisBook = thisBook });
     }
     public ActionResult Edit(int id)
