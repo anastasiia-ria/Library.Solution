@@ -7,16 +7,14 @@
           <form class="col-auto">
             <div class="input-group mb-2">
               <input type="text" class="form-control" id="general" placeholder="Search" required>
-              <div class="input-group-append">
-                <button class="input-group-text button-search" type="submit" id="search"><i class="fa fa-search"></i></button>
+              <div class="input-group-text">
+                <button class="button-search" type="submit" id="search"><i class="fa fa-search"></i></button>
               </div>
             </div>
           </form>
           <p id="advanced-search">Advanced Search</p>
         </div>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-header" id="advanced-search-form">
         <div class="advanced-search-inputs">
@@ -32,10 +30,10 @@
         <nav id="pagination" class="mt-3">
           <ul class="pagination justify-content-center">
             <li class="page-item disabled">
-              <a class="page-link" id="page-prev"><i class="fa fa-caret-left"></i></a>
+              <a class="page-link" id="search-page-prev"><i class="fa fa-caret-left"></i></a>
             </li>
             <li class="page-item">
-              <a class="page-link" id="page-next"><i class="fa fa-caret-right"></i></a>
+              <a class="page-link" id="search-page-next"><i class="fa fa-caret-right"></i></a>
             </li>
           </ul>
         </nav>
@@ -44,50 +42,62 @@
           @using (Html.BeginForm("Create", "Books", FormMethod.Post))
           {
             <input type="hidden" name="ImgID"/>
-            <div class="form-row">
-                <label>Title</label>
+            <div class="form-floating mb-3">
                 @Html.TextBox("Title", "", new {required = "required", placeholder="Title", @class="form-control"})
+                <label>Title</label>
             </div>
-              <div class="form-row">
-                <label>Authors</label>
+              <div class="form-floating mb-3">
                 @Html.TextBox("Authors", "", new {required = "required", placeholder="Authors", @class="form-control"})
+                <label>Authors</label>
               </div>
-            <div class="form-group">
-              <Label>Description</Label>
+            <div class="form-floating mb-3">
               @Html.TextArea("Description", "", new {placeholder="Description", @class="form-control", rows=10})
+              <Label>Description</Label>
             </div>
-            <div class="form-row">
+            <div class="row">
               <div class="col">
-                <label>Publisher</label>
-                @Html.TextBox("Publisher", "", new {placeholder="Publisher", @class="form-control"})
+                <div class="form-floating mb-3">
+                  @Html.TextBox("Publisher", "", new {placeholder="Publisher", @class="form-control"})
+                  <label>Publisher</label>
+                </div>
               </div>
               <div class="col">
-                <label>Published Date</label>
-                @Html.TextBox("PublishedDate", "", new {placeholder="Published Date", @class="form-control"})
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="col">
-                <label>ISBN 10</label>
-                @Html.TextBox("ISBN_10", "", new {placeholder="ISBN 10", @class="form-control", type="number"})
-              </div>
-              <div class="col">
-                <label>ISBN 13</label>
-                @Html.TextBox("ISBN_13", "", new {placeholder="ISBN 13", @class="form-control", type="number"})
+                <div class="form-floating mb-3">
+                  @Html.TextBox("PublishedDate", "", new {placeholder="Published Date", @class="form-control"})
+                  <label>Published Date</label>
+                </div>
               </div>
             </div>
-            <div class="form-row">
+            <div class="row">
               <div class="col">
-                <label>Status</label>
-                  <select class="custom-select" name="Status">
+                <div class="form-floating mb-3">
+                  @Html.TextBox("ISBN_10", "", new {placeholder="ISBN 10", @class="form-control", type="number"})
+                  <label>ISBN 10</label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-floating mb-3">
+                  @Html.TextBox("ISBN_13", "", new {placeholder="ISBN 13", @class="form-control", type="number"})
+                  <label>ISBN 13</label>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col">
+                <div class="form-floating mb-3">
+                  <select class="form-select" name="Status">
                     <option value="Not Started">Not Started</option>
                     <option value="In Progress">In Progress</option>
                     <option value="Finished">Finished</option>
                   </select>
+                  <label>Status</label>
+                </div>
               </div>
               <div class="col">
-                <label>Page Count</label>
-                @Html.TextBox("PageCount", "", new {placeholder="Page Count", @class="form-control", type="number"})
+                <div class="form-floating mb-3">
+                  @Html.TextBox("PageCount", "", new {placeholder="Page Count", @class="form-control", type="number"})
+                  <label>Page Count</label>
+                </div>
               </div>
             </div>
             <button type="submit" class="btn btn-light">Add</button>

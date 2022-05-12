@@ -13,7 +13,7 @@
       <a class="nav-item nav-link" id="rooms-nav-@room.RoomId">@room.Name</a>
     }
     @* @Html.ActionLink("+", "Create", null, null, new {@class="nav-item nav-link"}) *@
-    <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addRoom">+</button>
+    <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addRoom">+</button>
   </div>
 </nav>
 @Html.Partial("AddRoom.cshtml")
@@ -33,7 +33,7 @@
           <div class="books">
             @foreach (var book in shelf.Books)
             {
-              <img src="~/img/books/@(counter).png" width="15px" id="book-@(book.BookId)" data-toggle="modal" data-target="#bookDetails">
+              <img src="~/img/books/@(counter).png" width="15px" id="book-@(book.BookId)" data-bs-toggle="modal" data-bs-target="#bookDetails">
               if (counter == 8) {
                 counter = 1;
               } else {
@@ -41,7 +41,7 @@
               }
             }
           </div>
-          <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addBook-@(shelf.ShelfId)">+</button>
+          <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBookToRoom" id="add-books-to-room">+</button>
           @Html.Partial("AddBook.cshtml", new ViewDataDictionary(ViewData){{ "shelfId", shelf.ShelfId }, {"roomId", room.RoomId}})
     
           @Html.Partial("BookDetails.cshtml")

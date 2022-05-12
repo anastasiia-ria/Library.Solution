@@ -20,7 +20,7 @@
     {
       <img src="../../wwwroot/img/books/@(counter).png" height="40px">
     }
-  <button type="button" class="btn btn-light" data-toggle="modal" data-target="#addBook">+</button>
+  <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBook">+</button>
     @using (Html.BeginForm("Create", "Books", FormMethod.Post, new { id = shelf.RoomId}))
       {
         @* @Html.LabelFor(model.Shelf.model => newModel.Title)

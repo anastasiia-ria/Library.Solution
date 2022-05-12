@@ -1,4 +1,8 @@
-﻿.container {
+﻿a {
+  cursor: pointer;
+}
+
+.container {
   margin-bottom: 60px;
   position: relative;
 }
@@ -71,6 +75,16 @@
 #start-search {
   display: inline-block;
   margin: 0 0 22px 15px;
+}
+
+.button-search {
+  border: none;
+  background: transparent;
+}
+
+.form-floating > .form-control,
+.form-floating > .form-select {
+  height: auto;
 }
 
 @keyframes tilt-shaking {

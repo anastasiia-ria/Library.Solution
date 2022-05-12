@@ -34,31 +34,46 @@ namespace Library.Controllers
       return Json(new { Books = allBooks, Size = size });
     }
 
-    public async Task<ActionResult> Index(int page)
+    public async Task<ActionResult> Index()
     {
-      int count = _db.Books.Count();
-      int perPage = 2;
-      int maxPage = (int)Math.Ceiling(((double)count) / perPage);
-      int Page = 1;
-      if (page == 0)
-      {
-        Page = 1;
-      }
-      else if (page > maxPage)
-      {
-        Page = maxPage;
-      }
-      else
-      {
-        Page = page;
-      }
-      ViewBag.Page = Page;
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).Skip(perPage * (Page - 1)).Take(perPage).ToList();
+      List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Take(8).ToList();
       return View(model);
     }
+    //     public async Task<ActionResult> Index(int page)
+    // {
+    //   int count = _db.Books.Count();
+    //   int perPage = 2;
+    //   int maxPage = (int)Math.Ceiling(((double)count) / perPage);
+    //   int Page = 1;
+    //   if (page == 0)
+    //   {
+    //     Page = 1;
+    //   }
+    //   else if (page > maxPage)
+    //   {
+    //     Page = maxPage;
+    //   }
+    //   else
+    //   {
+    //     Page = page;
+    //   }
+    //   ViewBag.Page = Page;
+    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    //   var currentUser = await _userManager.FindByIdAsync(userId);
+    //   List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Skip(perPage * (Page - 1)).Take(perPage).ToList();
+    //   return View(model);
+    // }
 
+    public async Task<JsonResult> Pagination(int skip)
+    {
+      int size = _db.Books.Count();
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      List<Book> books = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Skip(skip).Take(8).ToList();
+      return Json(new { books = books, size = size });
+    }
     public JsonResult Create(string id)
     {
       ViewBag.ShelfId = new SelectList(_db.Shelves, "ShelfId", "ShelfId");

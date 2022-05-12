@@ -44,9 +44,9 @@ namespace Library.Models
       var info = resultParse["volumeInfo"].ToObject<JObject>();
       var Title = info.ContainsKey("title") ? info["title"].ToString() : "";
       var Authors = info.ContainsKey("authors") ? String.Join(", ", info["authors"].ToObject<string[]>()) : "";
-      var Publisher = info.ContainsKey("publisher") ? info["title"].ToString() : "";
-      var PublishedDate = info.ContainsKey("publishedDate") ? info["title"].ToString() : "";
-      var Description = info.ContainsKey("description") ? info["title"].ToString() : "";
+      var Publisher = info.ContainsKey("publisher") ? info["publisher"].ToString() : "";
+      var PublishedDate = info.ContainsKey("publishedDate") ? info["publishedDate"].ToString() : "";
+      var Description = info.ContainsKey("description") ? info["description"].ToString() : "";
       var Identifiers = info.ContainsKey("industryIdentifiers") ? info["industryIdentifiers"] : new JArray();
       var ISBN_10 = "";
       var ISBN_13 = "";
