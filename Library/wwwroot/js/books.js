@@ -81,7 +81,7 @@ function paginate() {
       if (pagination.use === "index") {
         result["books"].forEach(function (book) {
           $("#books-page").append(`<div class="card" id="book-${book.bookId}"">
-          <button type="submit" class="btn btn-light delete-book">x</button>
+          <button type="submit" class="btn btn-light delete-book">✕</button>
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
@@ -207,6 +207,19 @@ $(document).ready(function () {
     paginate();
   });
 
+  $(document).on("click", ".shelf", function () {
+    let id = $(this).attr("id").slice(6);
+    let top = $(this).css("top");
+    let left = $(this).css("left");
+    console.log(id + top + left);
+    $.ajax({
+      type: "POST",
+      url: "../../Shelves/Drag",
+      data: { id: id, top: top, left: left },
+      success: function () {},
+    });
+  });
+
   $(document).on("click", "#assign-location", function (event) {
     event.preventDefault();
     let room = parseInt($("input[name = 'room']").val());
@@ -309,20 +322,46 @@ $(document).ready(function () {
     $("#add-book-form input").val("");
     searchAPI();
   });
-  console.log($("#rooms > div").attr("class"));
-  let shelvesCount = $("#rooms > div").attr("class").slice(13);
-  console.log(shelvesCount);
-  for (let i = 0; i < 50 - shelvesCount; i++) {
-    console.log("add");
-    // $("#rooms > div").append(`<div class="shelf-box">
-    // <span class="circle"></span></div>`);
-  }
-  var $draggables = $(".draggable").draggabilly({
-    containment: true,
+
+  $("#edit-room").click(function () {
+    $(".delete-shelf").toggle();
+    $(".add-books-to-room").toggle();
+    $(".books").toggleClass("handle");
+    $(".books").toggleClass("select-book");
+    var $draggables = $(".draggable").draggabilly({
+      handle: ".handle",
+      containment: true,
+    });
+    console.log("delete");
+  });
+  $(document).on("click", ".delete-shelf", function (event) {
+    event.preventDefault();
+    console.log($(this).parent().attr("id"));
+    let id = $(this).parent().attr("id").slice(6);
+    console.log(id);
+    $.ajax({
+      type: "POST",
+      url: "../../Shelves/Delete",
+      data: { id: id },
+      success: function () {
+        console.log("removing shelf ", id);
+        $(`#shelf-${id}`).remove();
+      },
+    });
+  });
+
+  $(document).on("click", "#minus", function () {
+    console.log("scale");
+    var regExp = /\(([^)]+)\)/;
+    console.log($(".room").css("transform"));
+    let current = parseInt(regExp.exec($(".room").css("transform")));
+    console.log(current);
+    $(".room").css("transform", "scale(0.5)");
   });
 });
 
-$(document).on("click", ".books > img", function () {
+$(document).on("click", ".select-book > .book", function () {
+  $("#bookDetails").modal("show");
   let id = parseInt($(this).attr("id").slice(5));
   $.ajax({
     type: "GET",

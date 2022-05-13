@@ -2,8 +2,10 @@
   cursor: pointer;
 }
 
-.container {
+body > .container {
   margin-bottom: 60px;
+}
+.container {
   position: relative;
 }
 
@@ -22,16 +24,10 @@
   text-align: center;
 }
 .room {
-  display: flex;
-  flex-wrap: wrap;
-  height: 70vh;
-  background-color: rgb(233, 229, 229);
-}
-
-.shelf-box {
-  height: 105px;
-  width: 105px;
-  background-color: white;
+  display: inline-block;
+  width: 100%;
+  height: calc(100vh - 288px);
+  background-color: rgb(243, 243, 243);
   position: relative;
 }
 
@@ -47,21 +43,41 @@
 
 .shelf {
   height: 105px;
-  width: 10%;
-  border-bottom: 5px solid brown;
-  display: flex;
+  min-width: 10%;
+  border-bottom: 5px solid rgb(0, 0, 0);
+  display: inline-flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
-  cursor: move;
+  position: absolute;
+  background-color: white;
+  border-radius: 15% 15% 0 0;
+  box-shadow: 0px 12px 15px rgba(0, 0, 0, 0.2);
 }
 
 .books {
   display: flex;
   align-items: flex-end;
   gap: 2px;
+  height: 100%;
+  width: 100%;
+  transform-origin: bottom left;
+  transform: scale(1);
 }
 
+.handle {
+  cursor: move;
+}
+
+.add-books-to-room {
+  display: none;
+}
+
+.book {
+  width: 15px;
+  height: 100px;
+  background-position: center;
+  background-size: auto 100%;
+}
 .hidden {
   display: none;
 }
@@ -86,6 +102,10 @@
   padding: 0.05rem 0.45rem;
   display: none;
   animation: tilt-shaking 0.3s infinite;
+  border: none;
+  background-color: white;
+  color: #c0c0c1;
+  border-radius: 50%;
 }
 
 #edit-room,
@@ -210,4 +230,13 @@
 
 #back-to-search {
   position: absolute;
+}
+
+.scale {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  display: flex;
+  gap: 5px;
+  flex-direction: column;
 }

@@ -17,7 +17,7 @@
   @foreach (Book book in Model)
   {
     <div class="card" id="book-@(book.BookId)">
-      <button type="submit" class="btn btn-light delete-book">x</button>
+      <button type="submit" class="btn btn-light delete-book">✕</button>
       <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
       <div class="card-body">
         <h5 class="card-title cut-text">@book.Title</h5>

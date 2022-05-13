@@ -20,28 +20,24 @@
   <div id="room-@(ViewBag.room.RoomId)" class="room shelves-@ViewBag.room.Shelves.Count ">
     @foreach (var shelf in @ViewBag.room.Shelves)
     {
-      int counter = 1;
       @* <div class="shelf-box"> *@
-        <div id="shelf-@(shelf.ShelfId)" class="shelf draggable">
-          <div class="books">
+        <div id="shelf-@(shelf.ShelfId)" class="shelf draggable" style="touch-action: none; left: @(shelf.Left); top: @(shelf.Top);">
+          <div class="books select-book">
             @foreach (var book in shelf.Books)
             {
-              <img src="~/img/books/@(counter).png" width="15px" id="book-@(book.BookId)" data-bs-toggle="modal" data-bs-target="#bookDetails">
-              if (counter == 8) {
-                counter = 1;
-              } else {
-                counter ++;
-              }
+              <div style="background-image: url('https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5');" class="book" id="book-@(book.BookId)">
+              </div>
             }
           </div>
-          <button type="button" class="btn btn-light delete-shelf">x</button>
-          <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addBookToRoom" id="add-books-to-room">+</button>
+          <button type="button" class="delete-shelf">✕</button>
+          <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
           @Html.Partial("AddBook.cshtml", new ViewDataDictionary(ViewData){{ "shelfId", shelf.ShelfId }, {"roomId", ViewBag.room.RoomId}})
     
           @Html.Partial("BookDetails.cshtml")
         </div>
       @* </div> *@
     }
+    <div class="scale"><span class="btn btn-light" id="plus">+</span><span class="btn btn-light" id="minus">-</span></div>
   </div>
 
     @using (Html.BeginForm("Create", "Shelves", new { id = ViewBag.room.RoomId},FormMethod.Post ))
