@@ -12,6 +12,7 @@ let Pagination = function () {
   this.skip = 0;
   this.size = 0;
   this.use = "index";
+  this.shelf = null;
 };
 Search.prototype.clear = function () {
   this.general = "";
@@ -21,6 +22,7 @@ Search.prototype.clear = function () {
   this.isbn = "";
   this.startIndex = 0;
   this.size = 0;
+  this.shelf = null;
 };
 Pagination.prototype.clear = function () {
   this.skip = 0;
@@ -31,7 +33,7 @@ Pagination.prototype.clear = function () {
 let search = new Search();
 let pagination = new Pagination();
 
-function searchAPI(search) {
+function searchAPI() {
   $.ajax({
     type: "GET",
     url: "../../Books/Search",
@@ -39,7 +41,10 @@ function searchAPI(search) {
     success: function (result) {
       console.log(result);
       search.size = result.size;
-      result.books["$values"].forEach(function (book) {
+      if (result.size <= 8) {
+        $("#search-page-next").parent().addClass("disabled");
+      }
+      result["books"].forEach(function (book) {
         $("#search-results").append(`<div class="card">
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
           <div class="card-body">
@@ -61,20 +66,20 @@ function searchAPI(search) {
   });
 }
 
-function paginate(pagination) {
+function paginate() {
   $.ajax({
     type: "GET",
     url: "../../Books/Pagination",
-    data: { skip: pagination.skip },
+    data: { skip: pagination.skip, shelfId: pagination.shelf },
     success: function (result) {
       console.log(result);
       console.log(pagination.skip);
       pagination.size = result.size;
+      if (result.size <= 8) {
+        $("#books-page-next").parent().addClass("disabled");
+      }
       if (pagination.use === "index") {
-        if (pagination.skip < pagination.size - 8) {
-          $("#books-page-next").parent().removeClass("disabled");
-        }
-        result.books["$values"].forEach(function (book) {
+        result["books"].forEach(function (book) {
           $("#books-page").append(`<div class="card" id="book-${book.bookId}"">
           <button type="submit" class="btn btn-light delete-book">x</button>
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
@@ -86,9 +91,8 @@ function paginate(pagination) {
         </div>`);
         });
       } else {
-        result.books["$values"].forEach(function (book) {
-          if (book.shelf === null) {
-            $("#books-to-add").append(`<div class="card" id="book-${book.bookId}">
+        result["books"].forEach(function (book) {
+          $("#books-to-add").append(`<div class="card" id="book-${book.bookId}">
             <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
             <div class="card-body">
               <h5 class="card-title cut-text">${book.title}</h5>
@@ -96,18 +100,10 @@ function paginate(pagination) {
               <button class="btn btn-light" id="assign-location">Add</button>
             </div>
           </div>`);
-          }
         });
       }
     },
-    error: function () {
-      var search = document.getElementById("search");
-      $("#advanced-search-form input").val("");
-      $(".search-title input").val("");
-      $("#pagination").hide();
-      search.setCustomValidity("Your search did not match any books. Please, try different keywords.");
-      search.reportValidity();
-    },
+    error: function () {},
   });
 }
 
@@ -131,7 +127,7 @@ $(document).ready(function () {
           pagination.skip -= 8;
         }
         $("#books-page").empty();
-        paginate(pagination);
+        paginate();
       },
     });
   });
@@ -155,7 +151,7 @@ $(document).ready(function () {
     search.title = title;
     search.publisher = publisher;
     search.isbn = isbn;
-    searchAPI(search);
+    searchAPI();
   });
 
   $(document).on("click", ".add-book-from-search", function (event) {
@@ -197,16 +193,18 @@ $(document).ready(function () {
     $("#pagination").show();
     search.clear();
     search.general = "programming";
-    searchAPI(search);
+    searchAPI();
   });
 
   $(document).on("click", "#add-books-to-room", function (event) {
     event.preventDefault();
+    let shelf = parseInt($("input[name = 'shelf']").val());
     $("#books-to-add").empty();
     pagination.clear();
     pagination.use = "rooms";
+    pagination.shelf = shelf;
     console.log("rooms");
-    paginate(pagination);
+    paginate();
   });
 
   $(document).on("click", "#assign-location", function (event) {
@@ -214,13 +212,16 @@ $(document).ready(function () {
     let room = parseInt($("input[name = 'room']").val());
     let shelf = parseInt($("input[name = 'shelf']").val());
     let id = parseInt($(this).closest(".card").attr("id").slice(5));
+    pagination.shelf = shelf;
     $.ajax({
       type: "POST",
       url: "../../Books/AddLocation",
       data: { id: id, shelfId: shelf, roomId: room },
       success: function () {
         $("#books-to-add").empty();
-        paginate(pagination);
+        paginate();
+        console.log(`#shelf-${shelf}`);
+        $(`#shelf-${shelf} > .books`).append(`<img src="/img/books/1.png" width="15px" id="book-${id}" data-bs-toggle="modal" data-bs-target="#bookDetails">`);
       },
     });
   });
@@ -256,7 +257,7 @@ $(document).ready(function () {
       $("#search-page-next").parent().removeClass("disabled");
     }
 
-    searchAPI(search);
+    searchAPI();
   });
 
   $("#search-page-next").click(function () {
@@ -268,7 +269,7 @@ $(document).ready(function () {
     if (search.startIndex >= 8) {
       $("#search-page-prev").parent().removeClass("disabled");
     }
-    searchAPI(search);
+    searchAPI();
   });
 
   $("#books-page-prev").click(function () {
@@ -282,7 +283,7 @@ $(document).ready(function () {
       $("#books-page-next").parent().removeClass("disabled");
     }
 
-    paginate(pagination);
+    paginate();
   });
 
   $("#books-page-next").click(function () {
@@ -297,7 +298,7 @@ $(document).ready(function () {
     if (pagination.skip >= 8) {
       $("#books-page-prev").parent().removeClass("disabled");
     }
-    paginate(pagination);
+    paginate();
   });
 
   $("#back-to-search").click(function () {
@@ -306,6 +307,27 @@ $(document).ready(function () {
     $("#pagination").show();
     $("#search-results").empty();
     $("#add-book-form input").val("");
-    searchAPI(search);
+    searchAPI();
+  });
+});
+
+$(document).on("click", ".books > img", function () {
+  let id = parseInt($(this).attr("id").slice(5));
+  $.ajax({
+    type: "GET",
+    url: "../../Books/Details",
+    data: { id: id },
+    success: function (result) {
+      var book = result.thisBook;
+      $("#book-title").text(book.title);
+      $("#book-description").html(book.description);
+      $("#book-authors").text(book.authors);
+      $("#book-publisher").text(book.publisher);
+      $("#book-publishedDate").text(book.publishedDate);
+      $("#book-pageCount").text(book.pageCount);
+      $("#book-isbn10").text(book.isbN_10);
+      $("#book-isbn13").text(book.isbN_13);
+      $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5`);
+    },
   });
 });
