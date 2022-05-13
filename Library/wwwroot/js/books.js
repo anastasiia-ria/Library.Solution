@@ -309,6 +309,17 @@ $(document).ready(function () {
     $("#add-book-form input").val("");
     searchAPI();
   });
+  console.log($("#rooms > div").attr("class"));
+  let shelvesCount = $("#rooms > div").attr("class").slice(13);
+  console.log(shelvesCount);
+  for (let i = 0; i < 50 - shelvesCount; i++) {
+    console.log("add");
+    // $("#rooms > div").append(`<div class="shelf-box">
+    // <span class="circle"></span></div>`);
+  }
+  var $draggables = $(".draggable").draggabilly({
+    containment: true,
+  });
 });
 
 $(document).on("click", ".books > img", function () {

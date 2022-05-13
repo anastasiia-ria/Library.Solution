@@ -12,7 +12,7 @@
 @if (@Model.Count == 0)
 {
   <h3>No books have been added yet!</h3>
-} 
+}
 <div class="row books-row" id="books-page">
   @foreach (Book book in Model)
   {
@@ -32,7 +32,7 @@
     <li class="page-item disabled">
       <span class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
     </li>
-    <li class=@(Model.Count <= 8 ? "page-item disabled" : "page-item")>
+    <li class="page-item @(ViewBag.Count <= 8 ? "disabled" : "")">
       <span class="page-link" id="books-page-next"><i class="fa fa-caret-right"></i></a>
     </li>
   </ul>

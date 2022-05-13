@@ -21,16 +21,39 @@
   background-color: #f5f5f5;
   text-align: center;
 }
+.room {
+  display: flex;
+  flex-wrap: wrap;
+  height: 70vh;
+  background-color: rgb(233, 229, 229);
+}
+
+.shelf-box {
+  height: 105px;
+  width: 105px;
+  background-color: white;
+  position: relative;
+}
+
+.circle {
+  background-color: gray;
+  width: 10%;
+  height: 10%;
+  border-radius: 50%;
+  position: absolute;
+  left: -5%;
+  top: -5%;
+}
 
 .shelf {
   height: 105px;
-  width: 200px;
+  width: 10%;
   border-bottom: 5px solid brown;
-  margin: 20px 10px 50px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
+  cursor: move;
 }
 
 .books {

@@ -21,24 +21,6 @@
               </li>
             </ul>
           </nav>
-          @* @foreach (Book book in @ViewBag.Books)
-          {
-            <div class="card">
-              @using (Html.BeginForm("Delete", "Books", new { id = ${book.bookId}},FormMethod.Post ))
-              {
-                <button type="submit" class="btn btn-light delete-book">x</button>
-              }
-              <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
-              <div class="card-body">
-                <h5 class="card-title cut-text">${book.title}</h5>
-                <p class="card-text cut-text">${book.authors}</p>
-                @using (Html.BeginForm("AddLocation", "Books", new { id = ${book.bookId}, shelfId = ViewData["shelfId"], roomId = ViewData["roomId"]},FormMethod.Post ))
-                {
-                  <button class="btn btn-light" type="submit">Add</button>
-                }
-              </div>
-            </div>
-          } *@
         </div>
       </div>
     </div>
