@@ -107,6 +107,31 @@ function paginate() {
   });
 }
 
+function scaleFunc(direction) {
+  let scale = 1.1;
+  if (direction === "minus") {
+    scale = 1 / scale;
+  }
+  console.log($("#shelf-28").css("top"));
+  console.log($("#shelf-28").css("left"));
+  $(".shelf").css("transform", `scale(${scale})`);
+  // $(".shelf").css("transform", `translate(${scale})`);
+  $(".shelf").each(function () {
+    // let top = parseFloat($(this).css("top").replace("px", ""));
+    // let bottom = $(".room").height() - top - $(this).height();
+    // let left = parseFloat($(this).css("left").replace("px", ""));
+    // let difference = bottom - bottom * scale;
+    // $(this).css("top", `${top + difference}px`);
+    // $(this).css("left", `${scale * left}px`);
+    let top = parseFloat($(this).css("top").replace("px", ""));
+    let bottom = $(".room").height() - top;
+    let left = parseFloat($(this).css("left").replace("px", ""));
+    let difference = bottom * scale;
+    $(this).css("top", `${$(".room").height() - difference}px`);
+    $(this).css("left", `${scale * left}px`);
+  });
+}
+
 $(document).ready(function () {
   $("#edit-books").click(function () {
     $(".delete-book").toggle();
@@ -351,12 +376,25 @@ $(document).ready(function () {
   });
 
   $(document).on("click", "#minus", function () {
-    console.log("scale");
-    var regExp = /\(([^)]+)\)/;
-    console.log($(".room").css("transform"));
-    let current = parseInt(regExp.exec($(".room").css("transform")));
-    console.log(current);
-    $(".room").css("transform", "scale(0.5)");
+    console.log($("#shelf-28").css("top"));
+    console.log($("#shelf-28").css("left"));
+    let str = $(".shelf").css("transform");
+    console.log(str);
+    let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
+    let current = parseFloat(number);
+    let scale = current - 0.1;
+    scaleFunc("minus");
+  });
+
+  $(document).on("click", "#plus", function () {
+    console.log($("#shelf-28").css("top"));
+    console.log($("#shelf-28").css("left"));
+    let str = $(".shelf").css("transform");
+    console.log(str);
+    let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
+    let current = parseFloat(number);
+    let scale = current + 0.1;
+    scaleFunc("plus");
   });
 });
 
