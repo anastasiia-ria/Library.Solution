@@ -10,17 +10,24 @@
   <div class="navbar-nav" id="rooms-nav">
     @foreach(Room room in Model)
     {
-      @Html.ActionLink(@room.Name, null, null, new {id = room.RoomId}, new {@class=(room.RoomId == ViewBag.room.RoomId ? "nav-item nav-link active" : "nav-item nav-link")})
+      <div class="nav-item ">
+        @Html.ActionLink(@room.Name, null, null, new {id = room.RoomId}, new {@class=(room.RoomId == ViewBag.room.RoomId ? "nav-link active" : "nav-item nav-link")})
+        @using (Html.BeginForm("Delete", "Rooms", new { id = room.RoomId},FormMethod.Post ))
+        {
+          <button type="submit" class="delete-room">✕</button>
+        }
+      </div>
+      
     }
     <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#addRoom">+</button>
   </div>
 </nav>
 @Html.Partial("AddRoom.cshtml")
-<div id="rooms">
-  <div id="room-@(ViewBag.room.RoomId)" class="room shelves-@ViewBag.room.Shelves.Count ">
-    @foreach (var shelf in @ViewBag.room.Shelves)
-    {
-      @* <div class="shelf-box"> *@
+@if (Model.Count != 0) {
+  <div class="rooms">
+    <div id="room-@(ViewBag.room.RoomId)" class="room shelves-@ViewBag.room.Shelves.Count ">
+      @foreach (var shelf in @ViewBag.room.Shelves)
+      {
         <div id="shelf-@(shelf.ShelfId)" class="shelf draggable" style="touch-action: none; left: @(shelf.Left); top: @(shelf.Top);">
           <div class="books select-book">
             @foreach (var book in shelf.Books)
@@ -31,15 +38,18 @@
           </div>
           <button type="button" class="delete-shelf">✕</button>
           <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
-          @Html.Partial("AddBook.cshtml", new ViewDataDictionary(ViewData){{ "shelfId", shelf.ShelfId }, {"roomId", ViewBag.room.RoomId}})
-    
-          @Html.Partial("BookDetails.cshtml")
+          <input type="hidden" name="shelf" value="@(shelf.ShelfId)">
+          <input type="hidden" name="room" value="@(ViewBag.room.RoomId)">
         </div>
-      @* </div> *@
-    }
-    <div class="scale"><span class="btn btn-light" id="plus">+</span><span class="btn btn-light" id="minus">-</span></div>
+      }
+    </div>
   </div>
-
+  <div class="scale">
+    <span class="btn btn-light" id="plus">+</span>
+    <span class="btn btn-light" id="minus">-</span>
+  </div>
+    @Html.Partial("AddBook.cshtml")
+    @Html.Partial("BookDetails.cshtml")
     @using (Html.BeginForm("Create", "Shelves", new { id = ViewBag.room.RoomId},FormMethod.Post ))
     {
       <button type="submit" class="btn btn-light">Add Shelf</button>
@@ -48,5 +58,4 @@
     {
       <button type="submit" class="btn btn-light">Delete Room</button>
     }
-</div>
-
+}

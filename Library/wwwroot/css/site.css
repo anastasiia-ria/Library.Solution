@@ -23,22 +23,22 @@ body > .container {
   background-color: #f5f5f5;
   text-align: center;
 }
-.room {
-  display: inline-block;
+
+.rooms {
   width: 100%;
-  height: calc(100vh - 288px);
+  height: calc(100vh - 228px);
   background-color: rgb(243, 243, 243);
+  align-items: flex-end;
+  overflow: scroll;
   position: relative;
 }
 
-.circle {
-  background-color: gray;
-  width: 10%;
-  height: 10%;
-  border-radius: 50%;
-  position: absolute;
-  left: -5%;
-  top: -5%;
+.room {
+  height: 100%;
+  background-color: rgb(243, 243, 243);
+  transform-origin: top left;
+  transform: scale(1);
+  z-index: 6000;
 }
 
 .shelf {
@@ -60,8 +60,6 @@ body > .container {
   gap: 2px;
   height: 100%;
   width: 100%;
-  transform-origin: bottom left;
-  transform: scale(1);
 }
 
 .handle {
@@ -82,6 +80,9 @@ body > .container {
   display: none;
 }
 
+#rooms-nav .nav-item {
+  position: relative;
+}
 #user-name,
 #account-icon {
   float: right;
@@ -95,7 +96,8 @@ body > .container {
 }
 
 .delete-shelf,
-.delete-book {
+.delete-book,
+.delete-room {
   position: absolute;
   top: -12px;
   right: -12px;
@@ -234,8 +236,8 @@ body > .container {
 
 .scale {
   position: absolute;
-  left: 5px;
-  bottom: 5px;
+  left: 25px;
+  bottom: 105px;
   display: flex;
   gap: 5px;
   flex-direction: column;

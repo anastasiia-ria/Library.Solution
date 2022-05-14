@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using System.Security.Claims;
-
+using System;
 namespace Library.Controllers
 {
   [Authorize]
@@ -21,12 +21,12 @@ namespace Library.Controllers
       _userManager = userManager;
       _db = db;
     }
-
-    public async Task<ActionResult> Index(int roomId)
+    public async Task<ActionResult> Index(int id)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      ViewBag.PrevRoomId = roomId;
+      ViewBag.PrevRoomId = id;
+      ViewBag.room = _db.Rooms.FirstOrDefault(room => room.RoomId == id) ?? _db.Rooms.FirstOrDefault(room => room.User == currentUser);
       ViewBag.Books = _db.Books.Where(book => book.User == currentUser).ToList();
       List<Room> model = _db.Rooms.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
@@ -89,6 +89,7 @@ namespace Library.Controllers
       _db.Books.Where(book => book.Room.RoomId == id).ToList().ForEach(book => book.Room = null);
       _db.Rooms.Remove(thisRoom);
       _db.SaveChanges();
+      Console.WriteLine("Delete");
       return RedirectToAction("Index");
     }
 

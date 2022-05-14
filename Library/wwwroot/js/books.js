@@ -12,7 +12,8 @@ let Pagination = function () {
   this.skip = 0;
   this.size = 0;
   this.use = "index";
-  this.shelf = null;
+  this.shelf = 0;
+  this.room = 0;
 };
 Search.prototype.clear = function () {
   this.general = "";
@@ -22,12 +23,13 @@ Search.prototype.clear = function () {
   this.isbn = "";
   this.startIndex = 0;
   this.size = 0;
-  this.shelf = null;
 };
 Pagination.prototype.clear = function () {
   this.skip = 0;
   this.size = 0;
   this.use = "index";
+  this.shelf = 0;
+  this.room = 0;
 };
 
 let search = new Search();
@@ -114,7 +116,6 @@ function scaleFunc(direction) {
   }
   console.log($("#shelf-28").css("top"));
   console.log($("#shelf-28").css("left"));
-  $(".shelf").css("transform", `scale(${scale})`);
   // $(".shelf").css("transform", `translate(${scale})`);
   $(".shelf").each(function () {
     // let top = parseFloat($(this).css("top").replace("px", ""));
@@ -221,13 +222,15 @@ $(document).ready(function () {
     searchAPI();
   });
 
-  $(document).on("click", "#add-books-to-room", function (event) {
+  $(document).on("click", ".add-books-to-room", function (event) {
     event.preventDefault();
-    let shelf = parseInt($("input[name = 'shelf']").val());
+    let shelf = parseInt($(this).next().val());
+    let room = parseInt($(this).next().next().val());
     $("#books-to-add").empty();
     pagination.clear();
     pagination.use = "rooms";
     pagination.shelf = shelf;
+    pagination.room = room;
     console.log("rooms");
     paginate();
   });
@@ -247,19 +250,19 @@ $(document).ready(function () {
 
   $(document).on("click", "#assign-location", function (event) {
     event.preventDefault();
-    let room = parseInt($("input[name = 'room']").val());
-    let shelf = parseInt($("input[name = 'shelf']").val());
+    let room = pagination.room;
+    let shelf = pagination.shelf;
     let id = parseInt($(this).closest(".card").attr("id").slice(5));
-    pagination.shelf = shelf;
     $.ajax({
       type: "POST",
       url: "../../Books/AddLocation",
       data: { id: id, shelfId: shelf, roomId: room },
-      success: function () {
+      success: function (result) {
         $("#books-to-add").empty();
         paginate();
         console.log(`#shelf-${shelf}`);
-        $(`#shelf-${shelf} > .books`).append(`<img src="/img/books/1.png" width="15px" id="book-${id}" data-bs-toggle="modal" data-bs-target="#bookDetails">`);
+        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=5');" class="book" id="book-${id}">
+        </div>`);
       },
     });
   });
@@ -350,6 +353,7 @@ $(document).ready(function () {
 
   $("#edit-room").click(function () {
     $(".delete-shelf").toggle();
+    $(".delete-room").toggle();
     $(".add-books-to-room").toggle();
     $(".books").toggleClass("handle");
     $(".books").toggleClass("select-book");
@@ -378,23 +382,24 @@ $(document).ready(function () {
   $(document).on("click", "#minus", function () {
     console.log($("#shelf-28").css("top"));
     console.log($("#shelf-28").css("left"));
-    let str = $(".shelf").css("transform");
+    let str = $(".room").css("transform");
     console.log(str);
     let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
     let current = parseFloat(number);
     let scale = current - 0.1;
-    scaleFunc("minus");
+    $(".room").css("transform", `scale(${scale})`);
+    // scaleFunc("minus");
   });
 
   $(document).on("click", "#plus", function () {
-    console.log($("#shelf-28").css("top"));
-    console.log($("#shelf-28").css("left"));
-    let str = $(".shelf").css("transform");
+    let str = $(".room").css("transform");
     console.log(str);
     let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
     let current = parseFloat(number);
     let scale = current + 0.1;
-    scaleFunc("plus");
+    $(".room").css("transform", `scale(${scale})`);
+    console.log($(".shelf").css("transform"));
+    // scaleFunc("plus");
   });
 });
 

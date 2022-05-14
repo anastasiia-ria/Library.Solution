@@ -45,6 +45,15 @@ namespace Library.Controllers
       _db.SaveChanges();
       return RedirectToAction("Index", "Rooms", new { roomId = id });
     }
+    [HttpPost]
+    public JsonResult Drag(int id, string top, string left)
+    {
+      Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == id);
+      shelf.Top = top;
+      shelf.Left = left;
+      _db.SaveChanges();
+      return Json(new { });
+    }
 
     public ActionResult Details(int id)
     {

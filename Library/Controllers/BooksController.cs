@@ -25,12 +25,9 @@ namespace Library.Controllers
 
     public JsonResult Search(string general, string title, string authors, string publisher, string isbn, int startIndex)
     {
-      Console.WriteLine(general);
       var array = Book.GetBooks(general, title, authors, publisher, isbn, startIndex);
       var size = array[1];
       var allBooks = array[0];
-      Console.WriteLine(allBooks);
-      Console.WriteLine(size);
       return Json(new { Books = allBooks, Size = size });
     }
 
@@ -38,40 +35,18 @@ namespace Library.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
+      ViewBag.Count = _db.Books.Where(entry => entry.User.Id == currentUser.Id).Count();
       List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Take(8).ToList();
       return View(model);
     }
-    //     public async Task<ActionResult> Index(int page)
-    // {
-    //   int count = _db.Books.Count();
-    //   int perPage = 2;
-    //   int maxPage = (int)Math.Ceiling(((double)count) / perPage);
-    //   int Page = 1;
-    //   if (page == 0)
-    //   {
-    //     Page = 1;
-    //   }
-    //   else if (page > maxPage)
-    //   {
-    //     Page = maxPage;
-    //   }
-    //   else
-    //   {
-    //     Page = page;
-    //   }
-    //   ViewBag.Page = Page;
-    //   var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-    //   var currentUser = await _userManager.FindByIdAsync(userId);
-    //   List<Book> model = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Skip(perPage * (Page - 1)).Take(perPage).ToList();
-    //   return View(model);
-    // }
 
-    public async Task<JsonResult> Pagination(int skip)
+    public async Task<JsonResult> Pagination(int skip, int shelfId)
     {
-      int size = _db.Books.Count();
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      List<Book> books = _db.Books.Where(entry => entry.User.Id == currentUser.Id).OrderBy(book => book.Title).Skip(skip).Take(8).ToList();
+      Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == shelfId);
+      int size = _db.Books.Where(book => book.User == currentUser && (book.Shelf == null || book.Shelf != shelf)).Count();
+      List<Book> books = _db.Books.Where(book => book.User == currentUser && (book.Shelf == null || book.Shelf != shelf)).OrderBy(book => book.Title).Skip(skip).Take(8).ToList();
       return Json(new { books = books, size = size });
     }
     public JsonResult Create(string id)
@@ -85,10 +60,10 @@ namespace Library.Controllers
     [HttpPost]
     public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
     {
-      if (!_db.Books.Any(book => book.ImgID == form["ImgID"].ToString()))
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      if (!_db.Books.Any(book => book.ImgID == form["ImgID"].ToString() && book.User == currentUser))
       {
-        var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var currentUser = await _userManager.FindByIdAsync(userId);
         Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgID"] };
         book.User = currentUser;
         _db.Books.Add(book);
@@ -97,7 +72,7 @@ namespace Library.Controllers
       return RedirectToAction("Index");
     }
     [HttpPost]
-    public ActionResult AddLocation(int id, int shelfId, int roomId)
+    public JsonResult AddLocation(int id, int shelfId, int roomId)
     {
       Book book = _db.Books.FirstOrDefault(book => book.BookId == id);
       Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == shelfId);
@@ -105,11 +80,12 @@ namespace Library.Controllers
       book.Shelf = shelf;
       book.Room = room;
       _db.SaveChanges();
-      return RedirectToAction("Index", "Rooms", new { roomId = roomId });
+      return Json(new { img = book.ImgID });
     }
     public JsonResult Details(int id)
     {
       Book thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
+      Console.WriteLine(id);
       return Json(new { thisBook = thisBook });
     }
     public ActionResult Edit(int id)
