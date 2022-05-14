@@ -64,10 +64,10 @@ namespace Library.Controllers
       var currentUser = await _userManager.FindByIdAsync(userId);
       if (!_db.Books.Any(book => book.ImgID == form["ImgID"].ToString() && book.User == currentUser))
       {
-        Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgID"] };
+        Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgID"], Rating = form["Rating"] };
         book.User = currentUser;
         _db.Books.Add(book);
-        _db.SaveChanges();
+        _db.SaveChanges();  
       }
       return RedirectToAction("Index");
     }

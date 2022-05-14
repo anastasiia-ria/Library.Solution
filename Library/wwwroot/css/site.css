@@ -29,10 +29,9 @@ body > .container {
   height: calc(100vh - 228px);
   background-color: rgb(243, 243, 243);
   align-items: flex-end;
-  overflow: scroll;
-  position: relative;
   background-image: url("../img/room.jpg");
   background-size: auto 100%;
+  position: relative;
 }
 
 .room {
@@ -44,6 +43,8 @@ body > .container {
   background-color: rgba(92, 92, 92, 0.4);
   width: 100%;
   height: 100%;
+  overflow: scroll;
+  position: relative;
 }
 
 .dotted {
@@ -92,6 +93,7 @@ body > .container {
   background-position: center;
   background-size: auto 100%;
   border-radius: 7.5px 7.5px 0 0;
+  cursor: pointer;
 }
 .hidden {
   display: none;
@@ -132,6 +134,7 @@ body > .container {
   position: absolute;
   right: 2rem;
   top: 1rem;
+  cursor: pointer;
 }
 
 #start-search {
@@ -174,11 +177,26 @@ body > .container {
 #add-book-form,
 #advanced-search-form,
 #pagination,
+#filter,
 .add-shelf,
 .add-room {
   display: none;
 }
 
+#open-filter {
+  cursor: pointer;
+  position: absolute;
+  right: 25px;
+  display: flex;
+  gap: 10px;
+}
+
+#clear {
+  cursor: pointer;
+  color: rgb(118, 118, 118);
+  text-decoration: underline;
+  display: none;
+}
 #add-book-form form {
   max-width: 600px;
   margin: auto;
@@ -216,6 +234,9 @@ body > .container {
   cursor: pointer;
   text-decoration: underline;
   color: rgb(118, 118, 118);
+  font-size: 0.75rem;
+  margin-top: -5px;
+  margin-bottom: 0;
 }
 .card-img-top {
   object-fit: contain;
@@ -226,6 +247,13 @@ body > .container {
   display: flex;
   gap: 15px;
   justify-content: space-between;
+}
+
+.rooms .modal-header {
+  background-color: rgba(229, 229, 229, 0.7);
+  position: absolute;
+  width: 100%;
+  z-index: 1;
 }
 
 .cut-text {
@@ -270,4 +298,15 @@ body > .container {
 
 .show {
   display: block;
+}
+
+.rating {
+  color: orange;
+  padding-bottom: 0.5rem;
+}
+
+.highlight {
+  transform: scale(1.2);
+  background-image: none !important;
+  background-color: greenyellow;
 }

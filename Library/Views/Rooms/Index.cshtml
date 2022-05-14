@@ -17,14 +17,47 @@
           <button type="submit" class="delete-room">✕</button>
         }
       </div>
-      
     }
     <button type="button" class="btn btn-light add-room @(Model.Count == 0 ? "show" : "")" data-bs-toggle="modal" data-bs-target="#addRoom">+</button>
+  </div>
+  <div id="open-filter">
+    <div id="clear">Clear</div>
+    <i class="fa fa-search"></i>
   </div>
 </nav>
 @Html.Partial("AddRoom.cshtml")
 @if (Model.Count != 0) {
   <div class="rooms">
+    <div id="filter" class="modal-header">
+      <form class="advanced-search-inputs">
+        <div class="form-floating">
+          <input class="form-control" type="text" id="title" placeholder="Title">
+          <label>Title</label>
+        </div>
+        <div class="form-floating">
+          <input class="form-control" type="text" id="authors" placeholder="Authors">
+          <label>Authors</label>
+        </div>
+        <div class="form-floating">
+          <input class="form-control" type="text" id="publisher" placeholder="Publisher"> 
+          <label>Publisher</label>
+        </div>
+        <div class="form-floating">
+          <input class="form-control" type="number" id="isbn" placeholder="ISBN"> 
+          <label>ISBN</label>
+        </div>
+        <div class="form-floating">
+          <select class="form-select" id="status">
+            <option value="">None</option>
+            <option value="Not Started">Not Started</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Finished">Finished</option>
+          </select>
+          <label>Status</label>
+        </div>
+        <button class="input-group-text" type="submit"><i class="fa fa-search"></i></button>
+      </form>
+    </div>
     <div class="room-overlay">
       <div id="room-@(ViewBag.room.RoomId)" class="room" style="transform: scale(@ViewBag.room.Scale);">
         @foreach (var shelf in @ViewBag.room.Shelves)

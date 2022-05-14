@@ -35,6 +35,18 @@ Pagination.prototype.clear = function () {
 let search = new Search();
 let pagination = new Pagination();
 
+function showRating(rating) {
+  let stars = "";
+  for (let i = 1; i <= 5; i++) {
+    if (rating > 0) {
+      stars += '<i class="fa fa-star"></i>';
+    } else {
+      stars += '<i class = "fa fa-star-o"></i>';
+    }
+    rating--;
+  }
+  return stars;
+}
 function searchAPI() {
   $.ajax({
     type: "GET",
@@ -51,7 +63,8 @@ function searchAPI() {
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
-            <p class="card-text cut-text">${book.authors}</p>
+            <div class="cut-text">${book.authors}</div>
+            <div class="rating">${showRating(book.rating)}</div>
             <button type="button" id="add-${book.imgID}" class="btn btn-light add-book-from-search">Add</button>
           </div>
         </div>`);
@@ -87,7 +100,8 @@ function paginate() {
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
-            <p class="card-text cut-text">${book.authors}</p>
+            <div class="cut-text">${book.authors}</div>
+            <div class="rating">${showRating(book.rating)}</div>
             <button class="btn btn-light show-book-details" data-bs-toggle="modal" data-bs-target="#bookDetails">Details</button>
           </div>
         </div>`);
@@ -98,7 +112,8 @@ function paginate() {
             <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
             <div class="card-body">
               <h5 class="card-title cut-text">${book.title}</h5>
-              <p class="card-text cut-text">${book.authors}</p>
+              <div class="cut-text">${book.authors}</div>
+              <div class="rating">${showRating(book.rating)}</div>
               <button class="btn btn-light" id="assign-location">Add</button>
             </div>
           </div>`);
@@ -202,7 +217,31 @@ $(document).ready(function () {
         $("input[name='ISBN_13']").val(book.isbN_13);
         $("input[name='PageCount']").val(book.pageCount);
         $("input[name='ImgID']").val(book.imgID);
+        $("input[name='Rating']").val(book.rating);
       },
+    });
+  });
+
+  $("#filter").on("submit", function (event) {
+    event.preventDefault();
+
+    let title = $("#title").val().toLowerCase();
+    let authors = $("#authors").val().toLowerCase();
+    let publisher = $("#publisher").val().toLowerCase();
+    let isbn = $("#isbn").val().toLowerCase();
+    let status = $("#status").val();
+    console.log(title + authors + publisher + isbn + status);
+    $.ajax({
+      type: "GET",
+      url: "../../Rooms/Filter",
+      data: { title: title, authors: authors, publisher: publisher, isbn: isbn, status: status },
+      success: function (result) {
+        console.log(result.books);
+        result.books.forEach(function (book) {
+          $(`#book-${book.bookId}`).addClass("highlight");
+        });
+      },
+      error: function () {},
     });
   });
 
@@ -211,9 +250,25 @@ $(document).ready(function () {
     $("#advanced-search-form").slideToggle();
   });
 
+  $(document).on("click", "#clear", function (event) {
+    event.preventDefault();
+    $(".book").removeClass("highlight");
+    $("#filter input").val("");
+  });
+
+  $(document).on("click", "#open-filter > i", function (event) {
+    event.preventDefault();
+    $("#filter").slideToggle();
+    $("#clear").toggle();
+    $("#open-filter > i").toggleClass("fa-search");
+    $("#open-filter > i").toggleClass("fa-close");
+  });
+
   $(document).on("click", "#start-search", function (event) {
     event.preventDefault();
     $("#search-results").empty();
+    $("#search-results").show();
+    $("#add-book-form").hide();
     $("#search").prev().hide();
     $("#pagination").show();
     search.clear();
@@ -287,10 +342,10 @@ $(document).ready(function () {
       data: { id: id, shelfId: shelf, roomId: room },
       success: function (result) {
         $("#books-to-add").empty();
+        $(`#book-${id}`).remove();
+        console.log(`#book-${id}`);
         paginate();
-        console.log(`#shelf-${shelf}`);
-        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=5');" class="book" id="book-${id}">
-        </div>`);
+        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=5');" class="book" id="book-${id}"></div>`);
       },
     });
   });
@@ -312,6 +367,7 @@ $(document).ready(function () {
         $("#book-isbn10").text(book.isbN_10);
         $("#book-isbn13").text(book.isbN_13);
         $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5`);
+        $(".rating").html(`${showRating(book.rating)}`);
       },
     });
   });
@@ -415,6 +471,21 @@ $(document).ready(function () {
   $(document).on("click", "#plus", function () {
     scaleFunc("plus");
   });
+
+  $(document).on("dblclick", ".room", function () {
+    $(".delete-shelf").toggle();
+    $(".delete-room").toggle();
+    $(".add-shelf").toggle();
+    $(".add-room").toggle();
+    $(".books-overlay").toggleClass("hidden");
+    $(".books-overlay").toggleClass("handle");
+    $(".room-overlay").toggleClass("dotted");
+    var $draggables = $(".draggable").draggabilly({
+      handle: ".handle",
+      containment: true,
+      grid: [20, 20],
+    });
+  });
 });
 
 $(document).on("click", ".select-book > .book", function () {
@@ -435,6 +506,7 @@ $(document).on("click", ".select-book > .book", function () {
       $("#book-isbn10").text(book.isbN_10);
       $("#book-isbn13").text(book.isbN_13);
       $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5`);
+      $(".rating").html(`${showRating(book.rating)}`);
     },
   });
 });

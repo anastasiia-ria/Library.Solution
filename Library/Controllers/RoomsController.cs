@@ -70,6 +70,36 @@ namespace Library.Controllers
       return Json(new { });
     }
 
+    public async Task<JsonResult> Filter(string title, string authors, string publisher, string isbn, string status)
+    {
+      Console.WriteLine(title + authors + publisher + isbn + status);
+      var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+      var currentUser = await _userManager.FindByIdAsync(userId);
+      var filter = _db.Books.Where(book => book.User == currentUser);
+      if (title != null)
+      {
+        filter = filter.Where(book => book.Title.ToLower().Contains(title));
+      }
+      if (authors != null)
+      {
+        filter = filter.Where(book => book.Authors.ToLower().Contains(authors));
+      }
+      if (publisher != null)
+      {
+        filter = filter.Where(book => book.Publisher.ToLower().Contains(publisher));
+      }
+      if (isbn != null)
+      {
+        filter = filter.Where(book => book.ISBN_10.ToLower().Contains(isbn) || book.ISBN_13.ToLower().Contains(isbn));
+      }
+      if (status != null)
+      {
+        filter = filter.Where(book => book.Status.ToLower().Contains(status));
+      }
+      var books = filter.ToList();
+      return Json(new { books = books });
+    }
+
     [HttpPost]
     public ActionResult Edit(Room room)
     {

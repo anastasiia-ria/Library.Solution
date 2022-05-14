@@ -42,6 +42,7 @@
           @using (Html.BeginForm("Create", "Books", FormMethod.Post))
           {
             <input type="hidden" name="ImgID"/>
+            <input type="hidden" name="Rating"/>
             <div class="form-floating mb-3">
                 @Html.TextBox("Title", "", new {required = "required", placeholder="Title", @class="form-control"})
                 <label>Title</label>
