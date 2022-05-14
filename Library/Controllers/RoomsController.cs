@@ -40,15 +40,14 @@ namespace Library.Controllers
     [HttpPost]
     public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
     {
-      Room room = new Room() { Name = form["Name"] };
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      room.User = currentUser;
-      Shelf shelf = new Shelf() { Room = room, User = currentUser };
+      Room room = new Room() { Name = form["Name"], User = currentUser, Scale = "1" };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px" };
       _db.Shelves.Add(shelf);
       _db.Rooms.Add(room);
       _db.SaveChanges();
-      return RedirectToAction("Index", "Rooms", new { roomId = room.RoomId });
+      return RedirectToAction("Index", "Rooms", new { id = room.RoomId });
     }
 
     public ActionResult Details(int id)
@@ -60,6 +59,15 @@ namespace Library.Controllers
     {
       var thisRoom = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
       return View(thisRoom);
+    }
+
+    [HttpPost]
+    public JsonResult Scale(int id, string scale)
+    {
+      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
+      room.Scale = scale;
+      _db.SaveChanges();
+      return Json(new { });
     }
 
     [HttpPost]

@@ -110,26 +110,25 @@ function paginate() {
 }
 
 function scaleFunc(direction) {
-  let scale = 1.1;
+  let str = $(".room").css("transform");
+  let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
+  let current = parseFloat(number);
+  let scale = current;
   if (direction === "minus") {
-    scale = 1 / scale;
+    scale = current - 0.1;
+  } else if (direction === "plus") {
+    scale = current + 0.1;
   }
-  console.log($("#shelf-28").css("top"));
-  console.log($("#shelf-28").css("left"));
-  // $(".shelf").css("transform", `translate(${scale})`);
-  $(".shelf").each(function () {
-    // let top = parseFloat($(this).css("top").replace("px", ""));
-    // let bottom = $(".room").height() - top - $(this).height();
-    // let left = parseFloat($(this).css("left").replace("px", ""));
-    // let difference = bottom - bottom * scale;
-    // $(this).css("top", `${top + difference}px`);
-    // $(this).css("left", `${scale * left}px`);
-    let top = parseFloat($(this).css("top").replace("px", ""));
-    let bottom = $(".room").height() - top;
-    let left = parseFloat($(this).css("left").replace("px", ""));
-    let difference = bottom * scale;
-    $(this).css("top", `${$(".room").height() - difference}px`);
-    $(this).css("left", `${scale * left}px`);
+  $(".room").css("transform", `scale(${scale})`);
+  let dots = 20 * scale;
+  $(".dotted").css("background-size", `${dots}px, ${dots}px`);
+  let id = $(".room").attr("id").slice(5);
+  console.log(id);
+  $.ajax({
+    type: "POST",
+    url: "../../Rooms/Scale",
+    data: { id: id, scale: scale },
+    success: function () {},
   });
 }
 
@@ -224,8 +223,9 @@ $(document).ready(function () {
 
   $(document).on("click", ".add-books-to-room", function (event) {
     event.preventDefault();
-    let shelf = parseInt($(this).next().val());
-    let room = parseInt($(this).next().next().val());
+    let shelf = parseInt($(this).parent().next().val());
+    let room = parseInt($(this).parent().next().next().val());
+    console.log(shelf + " " + room);
     $("#books-to-add").empty();
     pagination.clear();
     pagination.use = "rooms";
@@ -239,7 +239,7 @@ $(document).ready(function () {
     let id = $(this).attr("id").slice(6);
     let top = $(this).css("top");
     let left = $(this).css("left");
-    console.log(id + top + left);
+    console.log("Top: " + top + ", left: " + left);
     $.ajax({
       type: "POST",
       url: "../../Shelves/Drag",
@@ -248,6 +248,34 @@ $(document).ready(function () {
     });
   });
 
+  $(document).on("click", ".add-shelf", function (event) {
+    event.preventDefault();
+    let room = parseInt($(".room").attr("id").slice(5));
+    $.ajax({
+      type: "POST",
+      url: "../../Shelves/Create",
+      data: { id: room },
+      success: function (result) {
+        let shelf = result.shelf;
+        $(".room").append(`<div id="shelf-${shelf.shelfId}" class="shelf draggable" style="touch-action: none; left: ${shelf.left}; top: ${shelf.top};">
+        <div class="books select-book"></div>
+        <button type="button" class="delete-shelf">✕</button>
+        <div class="books-overlay handle">
+            <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
+          </div>
+        <input type="hidden" name="shelf" value="${shelf.shelfId}">
+        <input type="hidden" name="room" value="${shelf.roomId}">
+      </div>`);
+        $(".delete-shelf").show();
+        $(".add-books-to-room").show();
+        var $draggables = $(".draggable").draggabilly({
+          handle: ".handle",
+          containment: true,
+          grid: [20, 20],
+        });
+      },
+    });
+  });
   $(document).on("click", "#assign-location", function (event) {
     event.preventDefault();
     let room = pagination.room;
@@ -297,7 +325,6 @@ $(document).ready(function () {
     if (search.startIndex <= search.size - 8) {
       $("#search-page-next").parent().removeClass("disabled");
     }
-
     searchAPI();
   });
 
@@ -354,14 +381,16 @@ $(document).ready(function () {
   $("#edit-room").click(function () {
     $(".delete-shelf").toggle();
     $(".delete-room").toggle();
-    $(".add-books-to-room").toggle();
-    $(".books").toggleClass("handle");
-    $(".books").toggleClass("select-book");
+    $(".add-shelf").toggle();
+    $(".add-room").toggle();
+    $(".books-overlay").toggleClass("hidden");
+    $(".books-overlay").toggleClass("handle");
+    $(".room-overlay").toggleClass("dotted");
     var $draggables = $(".draggable").draggabilly({
       handle: ".handle",
       containment: true,
+      grid: [20, 20],
     });
-    console.log("delete");
   });
   $(document).on("click", ".delete-shelf", function (event) {
     event.preventDefault();
@@ -380,26 +409,11 @@ $(document).ready(function () {
   });
 
   $(document).on("click", "#minus", function () {
-    console.log($("#shelf-28").css("top"));
-    console.log($("#shelf-28").css("left"));
-    let str = $(".room").css("transform");
-    console.log(str);
-    let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
-    let current = parseFloat(number);
-    let scale = current - 0.1;
-    $(".room").css("transform", `scale(${scale})`);
-    // scaleFunc("minus");
+    scaleFunc("minus");
   });
 
   $(document).on("click", "#plus", function () {
-    let str = $(".room").css("transform");
-    console.log(str);
-    let number = str.substring(str.indexOf("(") + 1, str.indexOf(","));
-    let current = parseFloat(number);
-    let scale = current + 0.1;
-    $(".room").css("transform", `scale(${scale})`);
-    console.log($(".shelf").css("transform"));
-    // scaleFunc("plus");
+    scaleFunc("plus");
   });
 });
 

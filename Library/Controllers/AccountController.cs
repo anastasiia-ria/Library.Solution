@@ -34,8 +34,8 @@ namespace Library.Controllers
     public async Task<ActionResult> Register(RegisterViewModel model)
     {
       var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
-      Room room = new Room { Name = "Living Room" };
-      Shelf shelf = new Shelf { Room = room };
+      Room room = new Room { Name = "Living Room", Scale = "1" };
+      Shelf shelf = new Shelf { Room = room, Top = "120px", Left = "60px" };
       IdentityResult result = await _userManager.CreateAsync(user, model.Password);
       if (result.Succeeded)
       {

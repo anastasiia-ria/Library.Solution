@@ -35,15 +35,15 @@ namespace Library.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(int id)
+    public async Task<JsonResult> Create(int id)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
-      Shelf shelf = new Shelf() { Room = room, User = currentUser };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px" };
       _db.Shelves.Add(shelf);
       _db.SaveChanges();
-      return RedirectToAction("Index", "Rooms", new { roomId = id });
+      return Json(new { shelf = shelf });
     }
     [HttpPost]
     public JsonResult Drag(int id, string top, string left)
