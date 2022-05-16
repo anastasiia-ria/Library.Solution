@@ -1,0 +1,30 @@
+@model Library.ViewModels.BackgroundViewModel
+<div class="modal fade" id="addBackground" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Change Background</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      @using (Html.BeginForm("AddBackground", "Rooms", FormMethod.Post, new{enctype="multipart/form-data"}))
+      {
+        <div class="modal-body">
+          @Html.HiddenFor(model => model.RoomId)
+          <div class="mb-3">
+            <label class="btn btn-outline-secondary" class="form-control">
+              Upload
+              @Html.TextBoxFor(model => model.Background, new { type = "file"})
+              @Html.ValidationMessageFor(m => m.Background) 
+            </label>
+          </div>
+          <div class="mb-3">
+            <img id="imagepreview" src="" alt="your image"/> 
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-secondary">Submit</button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

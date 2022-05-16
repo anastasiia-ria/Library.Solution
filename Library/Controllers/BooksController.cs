@@ -51,23 +51,20 @@ namespace Library.Controllers
     }
     public JsonResult Create(string id)
     {
-      ViewBag.ShelfId = new SelectList(_db.Shelves, "ShelfId", "ShelfId");
-      ViewBag.RoomId = new SelectList(_db.Rooms, "RoomId", "RoomId");
       var book = Book.GetDetails(id);
       return Json(new { book = book });
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create(Microsoft.AspNetCore.Http.IFormCollection form)
+    public async Task<ActionResult> Create(Book book)
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      if (!_db.Books.Any(book => book.ImgID == form["ImgID"].ToString() && book.User == currentUser))
+      if (!_db.Books.Any(b => b.ImgID == book.ImgID && b.User == currentUser))
       {
-        Book book = new Book { Title = form["Title"], Authors = form["Authors"], Description = form["Description"], ISBN_10 = form["ISBN_10"], ISBN_13 = form["ISBN_13"], Publisher = form["Publisher"], PublishedDate = form["PublishedDate"], PageCount = form["PageCount"], Status = form["Status"], ImgID = form["ImgID"], Rating = form["Rating"] };
         book.User = currentUser;
         _db.Books.Add(book);
-        _db.SaveChanges();  
+        _db.SaveChanges();
       }
       return RedirectToAction("Index");
     }

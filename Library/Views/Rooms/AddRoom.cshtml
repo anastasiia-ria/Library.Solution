@@ -5,15 +5,17 @@
         <h5 class="modal-title" id="exampleModalLongTitle">Add Room</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        @using (Html.BeginForm("Create", "Rooms", FormMethod.Post))
-        {
+      @using (Html.BeginForm("Create", "Rooms", FormMethod.Post))
+      {
+        <div class="modal-body">
           <div class="form-group">
             @Html.TextBox("Name", "", new {required = "required", placeholder="Name", @class="form-control"})
           </div>
-          <button type="submit" class="btn btn-light">Add</button>
-        }
-      </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-outline-secondary">Add</button>
+        </div>
+      }
     </div>
   </div>
 </div>

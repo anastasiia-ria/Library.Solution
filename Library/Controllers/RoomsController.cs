@@ -1,23 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Library.Models;
+using Library.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System;
+using System.IO;
 namespace Library.Controllers
 {
   [Authorize]
   public class RoomsController : Controller
   {
     private readonly LibraryContext _db;
+    private readonly IWebHostEnvironment webHostEnvironment;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public RoomsController(UserManager<ApplicationUser> userManager, LibraryContext db)
+    public RoomsController(IWebHostEnvironment hostEnvironment, UserManager<ApplicationUser> userManager, LibraryContext db)
     {
+      webHostEnvironment = hostEnvironment;
       _userManager = userManager;
       _db = db;
     }
@@ -42,7 +47,7 @@ namespace Library.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      Room room = new Room() { Name = form["Name"], User = currentUser, Scale = "1" };
+      Room room = new Room() { Name = form["Name"], User = currentUser, Background = "room.jpg", Scale = "1" };
       Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px" };
       _db.Shelves.Add(shelf);
       _db.Rooms.Add(room);
@@ -68,6 +73,39 @@ namespace Library.Controllers
       room.Scale = scale;
       _db.SaveChanges();
       return Json(new { });
+    }
+
+    [HttpPost]
+    // [ValidateAntiForgeryToken]
+    public ActionResult AddBackground(BackgroundViewModel model)
+    {
+      Console.WriteLine("add");
+      if (ModelState.IsValid)
+      {
+        string uniqueFileName = UploadedFile(model);
+        Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == model.RoomId);
+        room.Background = uniqueFileName;
+        _db.SaveChanges();
+        return RedirectToAction("Index", "Rooms", new { id = room.RoomId });
+      }
+      return View();
+    }
+
+    private string UploadedFile(BackgroundViewModel model)
+    {
+      string uniqueFileName = null;
+
+      if (model.Background != null)
+      {
+        string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img/background");
+        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Background.FileName;
+        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+        using (var fileStream = new FileStream(filePath, FileMode.Create))
+        {
+          model.Background.CopyTo(fileStream);
+        }
+      }
+      return uniqueFileName;
     }
 
     public async Task<JsonResult> Filter(string title, string authors, string publisher, string isbn, string status)

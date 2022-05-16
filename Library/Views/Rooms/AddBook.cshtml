@@ -7,21 +7,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <div class="row books-row">
-          <input type="hidden" name="this-room">
-          <input type="hidden" name="this-shelf">
-          <div id="books-to-add" class="row books-row"></div>
-          <nav id="r-pagination" class="mt-3">
-            <ul class="pagination justify-content-center">
-              <li class="page-item disabled">
-                <a class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
-              </li>
-              <li class="page-item">
-                <a class="page-link" id="books-page-next"><i class="fa fa-caret-right"></i></a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <input type="hidden" name="this-room">
+        <input type="hidden" name="this-shelf">
+        <div id="books-to-add" class="row books-row"></div>
+        <div class="no-books">Congratulations! You have assign location to all your books!</div>
+        <nav id="r-pagination" class="p-bottom mt-3">
+          <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+              <a class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" id="books-page-next"><i class="fa fa-caret-right"></i></a>
+            </li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>

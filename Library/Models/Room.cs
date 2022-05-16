@@ -12,6 +12,8 @@ namespace Library.Models
     }
     public int RoomId { get; set; }
     public string Name { get; set; }
+    public string Scale { get; set; }
+    public string Background { get; set; }
     public virtual ICollection<Shelf> Shelves { get; set; }
     public virtual ICollection<Book> Books { get; set; }
     public virtual ApplicationUser User { get; set; }

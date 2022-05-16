@@ -58,14 +58,13 @@ function searchAPI() {
       if (result.size <= 8) {
         $("#search-page-next").parent().addClass("disabled");
       }
-      result["books"].forEach(function (book) {
-        $("#search-results").append(`<div class="card">
-          <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail">
+      result.books.forEach(function (book) {
+        $("#search-results").append(`<div class="card add-book-from-search" id="add-${book.imgID}">
+          <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
             <div class="cut-text">${book.authors}</div>
             <div class="rating">${showRating(book.rating)}</div>
-            <button type="button" id="add-${book.imgID}" class="btn btn-light add-book-from-search">Add</button>
           </div>
         </div>`);
       });
@@ -94,30 +93,38 @@ function paginate() {
         $("#books-page-next").parent().addClass("disabled");
       }
       if (pagination.use === "index") {
-        result["books"].forEach(function (book) {
+        result.books.forEach(function (book) {
           $("#books-page").append(`<div class="card" id="book-${book.bookId}"">
           <button type="submit" class="btn btn-light delete-book">✕</button>
-          <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+          <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
             <div class="cut-text">${book.authors}</div>
             <div class="rating">${showRating(book.rating)}</div>
-            <button class="btn btn-light show-book-details" data-bs-toggle="modal" data-bs-target="#bookDetails">Details</button>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-outline-secondary show-book-details" data-bs-toggle="modal" data-bs-target="#bookDetails">Details</button>
           </div>
         </div>`);
         });
       } else {
-        result["books"].forEach(function (book) {
-          $("#books-to-add").append(`<div class="card" id="book-${book.bookId}">
-            <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
-            <div class="card-body">
-              <h5 class="card-title cut-text">${book.title}</h5>
-              <div class="cut-text">${book.authors}</div>
-              <div class="rating">${showRating(book.rating)}</div>
-              <button class="btn btn-light" id="assign-location">Add</button>
-            </div>
-          </div>`);
-        });
+        if (result.books.length === 0) {
+          $(".no-books").show();
+          $("#r-pagination").hide();
+        } else {
+          $(".no-books").hide();
+          $("#r-pagination").show();
+          result.books.forEach(function (book) {
+            $("#books-to-add").append(`<div class="card assign-location" id="book-${book.bookId}">
+              <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
+              <div class="card-body">
+                <h5 class="card-title cut-text">${book.title}</h5>
+                <div class="cut-text">${book.authors}</div>
+                <div class="rating">${showRating(book.rating)}</div>
+              </div>
+            </div>`);
+          });
+        }
       }
     },
     error: function () {},
@@ -207,14 +214,20 @@ $(document).ready(function () {
       data: { id: id },
       success: function (result) {
         var book = result.book;
+        tinymce.init({
+          selector: "#myTextarea",
+        });
         console.log(book);
         $("input[name='Title']").val(book.title);
+        $("input[name='Subtitle']").val(book.subtitle);
         $("input[name='Authors']").val(book.authors);
         $("textarea[name='Description']").val(book.description);
         $("input[name='Publisher']").val(book.publisher);
         $("input[name='PublishedDate']").val(book.publishedDate);
         $("input[name='ISBN_10']").val(book.isbN_10);
         $("input[name='ISBN_13']").val(book.isbN_13);
+        $("input[name='Categories']").val(book.categories);
+        $("input[name='Language']").val(book.language);
         $("input[name='PageCount']").val(book.pageCount);
         $("input[name='ImgID']").val(book.imgID);
         $("input[name='Rating']").val(book.rating);
@@ -314,7 +327,7 @@ $(document).ready(function () {
         let shelf = result.shelf;
         $(".room").append(`<div id="shelf-${shelf.shelfId}" class="shelf draggable" style="touch-action: none; left: ${shelf.left}; top: ${shelf.top};">
         <div class="books select-book"></div>
-        <button type="button" class="delete-shelf">✕</button>
+        <button type="button" class="delete-shelf btn-light">✕</button>
         <div class="books-overlay handle">
             <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
           </div>
@@ -331,11 +344,18 @@ $(document).ready(function () {
       },
     });
   });
-  $(document).on("click", "#assign-location", function (event) {
+
+  $(document).on("click", ".change-background", function (event) {
+    event.preventDefault();
+    let room = parseInt($(".room").attr("id").slice(5));
+    $("input[name='RoomId']").val(room);
+  });
+
+  $(document).on("click", ".assign-location", function (event) {
     event.preventDefault();
     let room = pagination.room;
     let shelf = pagination.shelf;
-    let id = parseInt($(this).closest(".card").attr("id").slice(5));
+    let id = parseInt($(this).attr("id").slice(5));
     $.ajax({
       type: "POST",
       url: "../../Books/AddLocation",
@@ -345,13 +365,13 @@ $(document).ready(function () {
         $(`#book-${id}`).remove();
         console.log(`#book-${id}`);
         paginate();
-        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=5');" class="book" id="book-${id}"></div>`);
+        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=1');" class="book" id="book-${id}"></div>`);
       },
     });
   });
 
   $(".show-book-details").click(function () {
-    let id = parseInt($(this).closest(".card").attr("id").slice(5));
+    let id = parseInt($(this).attr("id").slice(5));
     $.ajax({
       type: "GET",
       url: "../../Books/Details",
@@ -359,6 +379,7 @@ $(document).ready(function () {
       success: function (result) {
         var book = result.thisBook;
         $("#book-title").text(book.title);
+        $("#book-subtitle").text(book.subtitle);
         $("#book-description").html(book.description);
         $("#book-authors").text(book.authors);
         $("#book-publisher").text(book.publisher);
@@ -366,7 +387,9 @@ $(document).ready(function () {
         $("#book-pageCount").text(book.pageCount);
         $("#book-isbn10").text(book.isbN_10);
         $("#book-isbn13").text(book.isbN_13);
-        $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5`);
+        $("#book-language").text(book.language);
+        $("#book-categories").text(book.categories);
+        $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1`);
         $(".rating").html(`${showRating(book.rating)}`);
       },
     });
@@ -439,6 +462,8 @@ $(document).ready(function () {
     $(".delete-room").toggle();
     $(".add-shelf").toggle();
     $(".add-room").toggle();
+    $(".change-background").toggle();
+    $(".scale").toggleClass("hidden");
     $(".books-overlay").toggleClass("hidden");
     $(".books-overlay").toggleClass("handle");
     $(".room-overlay").toggleClass("dotted");
@@ -486,6 +511,21 @@ $(document).ready(function () {
       grid: [20, 20],
     });
   });
+
+  $(document).on("change", "#addBackground input[type='file']", function () {
+    $("#imagepreview").show();
+    if ($(this)[0].files && $(this)[0].files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        $("#imagepreview").attr("src", e.target.result);
+      };
+      reader.readAsDataURL($(this)[0].files[0]);
+    }
+  });
+  $(document).on("submit", "#addBackground form", function () {
+    $("#imagepreview").hide();
+    $("#imagepreview").attr("src", "");
+  });
 });
 
 $(document).on("click", ".select-book > .book", function () {
@@ -505,7 +545,7 @@ $(document).on("click", ".select-book > .book", function () {
       $("#book-pageCount").text(book.pageCount);
       $("#book-isbn10").text(book.isbN_10);
       $("#book-isbn13").text(book.isbN_13);
-      $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=5`);
+      $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1`);
       $(".rating").html(`${showRating(book.rating)}`);
     },
   });

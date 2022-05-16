@@ -16,18 +16,17 @@
 <div class="row books-row" id="books-page">
   @foreach (Book book in Model)
   {
-    <div class="card" id="book-@(book.BookId)">
+    <div class="card show-book-details" id="book-@(book.BookId)" data-bs-toggle="modal" data-bs-target="#bookDetails">
       <button type="submit" class="btn btn-light delete-book">✕</button>
-      <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=5" alt="Book thumbnail" height="240px" object-fit="contain">
+      <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
       <div class="card-body">
         <h5 class="card-title cut-text">@book.Title</h5>
         <p class="card-text cut-text">@book.Authors</p>
-        <button class="btn btn-light show-book-details" data-bs-toggle="modal" data-bs-target="#bookDetails">Details</button>
       </div>
     </div>
   }
 </div>
-<nav class="mt-3">
+<nav class="mt-3 p-bottom">
   <ul class="pagination justify-content-center">
     <li class="page-item disabled">
       <span class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
@@ -37,5 +36,5 @@
     </li>
   </ul>
 </nav>
-@Html.Partial("AddBook.cshtml")
+@Html.Partial("AddBook.cshtml", new Book())
 @Html.Partial("BookDetails.cshtml")
