@@ -1,26 +1,37 @@
-@{
-  Layout = "_Layout";
-}
-
 @using Library.ViewModels
 
 @model RegisterViewModel
 
-<h2>Register a new user</h2>
-<hr />
-@using (Html.BeginForm("Register", "Account", FormMethod.Post))
+<h4>Register</h4>
+@using (Html.BeginForm("Register", "Account", FormMethod.Post, new {id="register-form"}))
 { 
-  <div class="form-group">
-    @Html.TextBoxFor(user=> user.FullName, new{@class="form-control", @type="text", placeholder="Name"})
+  <div class="form-floating mb-3">
+    @Html.TextBoxFor(user=> user.FullName, new{required = "required", @class="form-control", @type="text", placeholder="Name"})
+    <label>Name</label>
   </div>
-  <div class="form-group">
-    @Html.TextBoxFor(user=> user.Email, new{@class="form-control", @type="email", placeholder="Email"})
+  <div class="form-floating mb-3">
+    @Html.TextBoxFor(user=> user.Email, new{required = "required", @class="form-control", @type="email", placeholder="Email", id="register-e"})
+    <label>Email</label>
+    <div class="validation email-validation">
+      <p id="valid" class="hidden">Please enter a valid email address</p>
+      <p id="used" class="hidden">This email has already been used</p>
+      <div class="fa fa-caret-right p-arrow"></div>
+    </div>
   </div>
-  <div class="form-group">
-    @Html.PasswordFor(user=> user.Password, new{@class="form-control", @type="password", placeholder="Password"})
+  <div class="form-floating mb-3">
+    @Html.PasswordFor(user=> user.Password, new{required = "required",@class="form-control", @type="password", placeholder="Password", autocomplete="new-password", id="register-p"})
+    <label>Password</label>
+    <div class="validation password-validation">
+      <p id="length"><span class="fa fa-close"></span>At least 8 characters</p>
+      <p id="letter"><span class="fa fa-close"></span>At least one letter</p>
+      <p id="capital"><span class="fa fa-close"></span>At least one capital letter</p>
+      <p id="number"><span class="fa fa-close"></span>At least one number</p>
+      <div class="fa fa-caret-right p-arrow"></div>
+    </div>
   </div>
-  <div class="form-group">
-    @Html.PasswordFor(user=> user.ConfirmPassword, new{@class="form-control", @type="password", placeholder="Confirm Password"})
+  <div class="form-floating mb-3">
+    @Html.PasswordFor(user=> user.ConfirmPassword, new{required = "required",@class="form-control", @type="password", placeholder="Confirm Password", id="register-p-c"})
+    <label>Confirm Password</label>
   </div>
-    <button type="submit" class="btn btn-light">Submit</button>
+    <button type="submit" disabled class="btn btn-outline-secondary">Submit</button>
 }

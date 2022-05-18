@@ -3,7 +3,6 @@
 }
 
 @using Library.Models;
-<div id="@(ViewBag.PrevRoomId)" class="getRoomId"></div>
 <h1>Rooms</h1>
 <i class="fa fa-gear fa-spin" id="edit-room" style="font-size:24px"></i>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -14,7 +13,7 @@
         @Html.ActionLink(@room.Name, null, null, new {id = room.RoomId}, new {@class=(room.RoomId == ViewBag.room.RoomId ? "nav-link active" : "nav-item nav-link")})
         @using (Html.BeginForm("Delete", "Rooms", new { id = room.RoomId},FormMethod.Post ))
         {
-          <button type="submit" class="delete-room btn-light">✕</button>
+          <button type="submit" class="delete-room btn btn-light corner-icon">✕</button>
         }
       </div>
     }
@@ -64,17 +63,16 @@
         @foreach (var shelf in @ViewBag.room.Shelves)
         {
           <div id="shelf-@(shelf.ShelfId)" class="shelf draggable" style="touch-action: none; left: @(shelf.Left); top: @(shelf.Top);">
-            <div class="books select-book">
+            <div class="books select-book" style="width:@(shelf.Width); height:@(shelf.Height)">
               @foreach (var book in shelf.Books)
               {
                 <div style="background-image: url('https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1');" class="book" id="book-@(book.BookId)">
                 </div>
               }
             </div>
-            <button type="button" class="delete-shelf btn-light">✕</button>
-            <div class="books-overlay hidden">
-              <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
-            </div>
+            <span class="delete-shelf btn btn-light corner-icon">✕</span>
+            <span class="btn btn-light add-books-to-room corner-icon" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</span>
+            <span class="handle btn btn-light corner-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></span>
             <input type="hidden" name="shelf" value="@(shelf.ShelfId)">
             <input type="hidden" name="room" value="@(ViewBag.room.RoomId)">
           </div>
@@ -84,6 +82,7 @@
     <button type="button" class="btn btn-light add-shelf">+</button>
     <button type="button" class="btn btn-light change-background" data-bs-toggle="modal" data-bs-target="#addBackground"><i class="fa fa-upload" aria-hidden="true"></i></button>
     <div class="hidden scale">
+      <button type="button"class="grid btn btn-light"><span class='bi bi-grid-3x3-gap-fill'></span></button>
       <span class="btn btn-light" id="plus">+</span>
       <span class="btn btn-light" id="minus">-</span>
     </div>

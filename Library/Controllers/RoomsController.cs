@@ -30,8 +30,8 @@ namespace Library.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      ViewBag.PrevRoomId = id;
       ViewBag.room = _db.Rooms.FirstOrDefault(room => room.RoomId == id) ?? _db.Rooms.FirstOrDefault(room => room.User == currentUser);
+      ViewBag.image = ViewBag.room.Background;
       ViewBag.Books = _db.Books.Where(book => book.User == currentUser).ToList();
       List<Room> model = _db.Rooms.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
@@ -48,7 +48,7 @@ namespace Library.Controllers
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       Room room = new Room() { Name = form["Name"], User = currentUser, Background = "room.jpg", Scale = "1" };
-      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px" };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px", Height = "105px", Width = "125px" };
       _db.Shelves.Add(shelf);
       _db.Rooms.Add(room);
       _db.SaveChanges();
@@ -76,7 +76,7 @@ namespace Library.Controllers
     }
 
     [HttpPost]
-    // [ValidateAntiForgeryToken]
+    [ValidateAntiForgeryToken]
     public ActionResult AddBackground(BackgroundViewModel model)
     {
       Console.WriteLine("add");
@@ -97,8 +97,14 @@ namespace Library.Controllers
 
       if (model.Background != null)
       {
+        string rootFolderPath = Path.Combine(webHostEnvironment.WebRootPath, "img/background");
+        string[] files = Directory.GetFiles(rootFolderPath, @"*RoomId_" + model.RoomId + "*");
+        foreach (string f in files)
+        {
+          System.IO.File.Delete(f);
+        }
         string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "img/background");
-        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Background.FileName;
+        uniqueFileName = Guid.NewGuid().ToString() + "_RoomId_" + model.RoomId + model.Background.FileName;
         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
         using (var fileStream = new FileStream(filePath, FileMode.Create))
         {

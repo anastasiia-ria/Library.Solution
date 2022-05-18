@@ -1,19 +1,16 @@
-@{
-  Layout = "_Layout";
-}
-
 @using Library.ViewModels
 
 @model LoginViewModel
 
-<h2>Log in with your account</h2>
-<hr />
-@using (Html.BeginForm())
-{ <div class="form-group">
-    @Html.TextBoxFor(m => m.Email, new{@class="form-control", @type="text", placeholder="Email"})
+<h4>Log in</h4>
+@using (Html.BeginForm("Login", "Account", FormMethod.Post))
+{ <div class="form-floating mb-3">
+    @Html.TextBoxFor(m => m.Email, new{required = "required", @class="form-control", @type="text", placeholder="Email"})
+    <label>Email</label>
   </div>
-  <div class="form-group">
-    @Html.PasswordFor(m => m.Password, new{@class="form-control", @type="password", placeholder="Password"})
+  <div class="form-floating mb-3">
+    @Html.PasswordFor(m => m.Password, new{required = "required", @class="form-control", @type="password", placeholder="Password", autocomplete="current-password"})
+    <label>Password</label>
   </div>
-    <button type="submit" class="btn btn-light">Log in</button>
+    <button type="submit" class="btn btn-outline-secondary">Log in</button>
 }

@@ -49,7 +49,7 @@
                 <label>Title</label>
             </div>
             <div class="form-floating mb-3">
-                @Html.TextBoxFor(model => model.Subtitle, new {required = "required", placeholder="Subtitle", @class="form-control"})
+                @Html.TextBoxFor(model => model.Subtitle, new {placeholder="Subtitle", @class="form-control"})
                 <label>Subtitle</label>
             </div>
             <div class="form-floating mb-3">
@@ -104,7 +104,9 @@
                 </div>
               </div>
             </div>
-            <button type="submit" class="btn btn-light">Add</button>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-outline-secondary">Add</button>
+            </div>
           }
         </div>
       </div>

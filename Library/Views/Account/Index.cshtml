@@ -14,6 +14,15 @@
 }
 else
 {
-    @Html.ActionLink("Register", "Register", null, null, new {@class="btn btn-light"})
-    @Html.ActionLink("Log in", "Login", null, null, new {@class="btn btn-light"})
+    <div class="row justify-content-around">
+        <div class="col-4">
+            @Html.Partial("Login.cshtml", new Library.ViewModels.LoginViewModel())
+        </div>
+        <div class="col-4">
+            @Html.Partial("Register.cshtml", new Library.ViewModels.RegisterViewModel())
+        </div>
+    </div>
 }
+
+
+

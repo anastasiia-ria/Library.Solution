@@ -8,18 +8,14 @@
       </div>
       @using (Html.BeginForm("AddBackground", "Rooms", FormMethod.Post, new{enctype="multipart/form-data"}))
       {
-        <div class="modal-body">
+        <div class="modal-body d-flex justify-content-between align-items-start">
           @Html.HiddenFor(model => model.RoomId)
-          <div class="mb-3">
-            <label class="btn btn-outline-secondary" class="form-control">
-              Upload
-              @Html.TextBoxFor(model => model.Background, new { type = "file"})
-              @Html.ValidationMessageFor(m => m.Background) 
-            </label>
-          </div>
-          <div class="mb-3">
-            <img id="imagepreview" src="" alt="your image"/> 
-          </div>
+          <img id="imagepreview" src="~/img/background/@(ViewBag.image)" alt="your image"/> 
+          <label class="btn btn-outline-secondary" class="form-control">
+            Upload
+            @Html.TextBoxFor(model => model.Background, new { type = "file", accept="image/*"})
+            @Html.ValidationMessageFor(m => m.Background) 
+          </label>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-outline-secondary">Submit</button>

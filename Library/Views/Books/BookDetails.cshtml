@@ -10,39 +10,39 @@
           <div class="col-8">
             <h2 id="book-title"></h2>
             <h3 id="book-subtitle"></h3>
-            <h5>By <span id="book-authors"></span></h5>
-            <div class="row">
-              <div class="col">
-                <p>Publisher: </p>
-                <p>Published Date:</p>
-                <p>ISBN 10:</p>
-                <p>ISBN 13:</p>
+            <h5>By </span></span><span id="book-authors"></span></h5>
+            <div class="row book-info-col">
+              <div class="col-8">
+                <p><span class="book-info">Publisher:</span><span id="book-publisher"></span></p>
+                <p><span class="book-info">Published Date:</span><span id="book-publishedDate"></span></p>
+                <p><span class="book-info">ISBN 10:</span><span id="book-isbn10"></span></p>
+                <p><span class="book-info">ISBN 13:</span><span id="book-isbn13"></span></p>
+                <p><span class="book-info">Category:</span><span id="book-categories"></span></p>
               </div>
-              <div class="col">
-                <p><span id="book-publisher"></span></p>
-                <p><span id="book-publishedDate"></span></p>
-                <p><span id="book-isbn10"></span></p>
-                <p><span id="book-isbn13"></span></p>
+              <div class="col-4">
+                <p><span class="book-info">Page Count:</span><span id="book-pageCount"></span></p>
+                <p><span class="book-info">Language:</span><span id="book-language"></span></p>
               </div>
-              <div class="col">
-                <p>Page Count:</p>
-                <p>Language:</p>
-                <p>Category:</p>
+            </div>
+            <div class="row book-info-col">
+              <div class="col-3">
               </div>
-              <div class="col">
-                <p><span id="book-pageCount"></span></p>
-                <p><span id="book-language"></span></p>
-                <p><span id="book-categories"></span></p>
+              <div class="col-9">
               </div>
             </div>
           </div>
-          <div class="col-4">
+          <div class="col-4 detail-img">
             <img id="book-img" alt="Book Thumbnail">
             <div class="rating"></div>
           </div>
         </div>
-        <div class="row" id="book-description">
+        <hr/>
+        <div class="row">
+          <div id="book-description"></div>
         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-outline-secondary">Edit</button>
       </div>
     </div>
   </div>

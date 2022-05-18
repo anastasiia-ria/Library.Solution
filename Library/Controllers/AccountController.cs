@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Library.Models;
 using System.Threading.Tasks;
 using Library.ViewModels;
-using System.Security.Claims;
+using System;
 
 namespace Library.Controllers
 {
@@ -35,7 +35,7 @@ namespace Library.Controllers
     {
       var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
       Room room = new Room { Name = "Living Room", Background = "room.jpg", Scale = "1" };
-      Shelf shelf = new Shelf() { Room = room, Top = "120px", Left = "60px" };
+      Shelf shelf = new Shelf() { Room = room, Top = "120px", Left = "60px", Height = "105px", Width = "125px" };
       IdentityResult result = await _userManager.CreateAsync(user, model.Password);
       if (result.Succeeded)
       {
@@ -51,12 +51,13 @@ namespace Library.Controllers
         }
         else
         {
-          return View("Index");
+          return View("Index", "Account");
         }
       }
       else
       {
-        return View();
+        Console.WriteLine(result);
+        return View("Index", "Account");
       }
     }
 
@@ -77,6 +78,12 @@ namespace Library.Controllers
       {
         return View("Index");
       }
+    }
+
+    public async Task<JsonResult> Validate(string email)
+    {
+      var currentUser = await _userManager.FindByEmailAsync(email);
+      return Json(new { account = currentUser });
     }
 
     [HttpPost]
