@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Library.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    [Migration("20220429233141_Initial")]
+    [Migration("20220519000532_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,9 @@ namespace Library.Migrations
                     b.Property<string>("Authors")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("Categories")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("Description")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -107,6 +110,9 @@ namespace Library.Migrations
                     b.Property<string>("ImgID")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("Language")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("PageCount")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -116,11 +122,20 @@ namespace Library.Migrations
                     b.Property<string>("Publisher")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<int>("RoomId")
+                    b.Property<string>("Rating")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("RoomId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShelfId")
+                    b.Property<int?>("ShelfId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Subtitle")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Title")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -145,11 +160,20 @@ namespace Library.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Background")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Scale")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Width")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("RoomId");
 
@@ -164,14 +188,26 @@ namespace Library.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Height")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Left")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("RoomId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Top")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255) CHARACTER SET utf8mb4");
+
+                    b.Property<string>("Width")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("ShelfId");
 
@@ -314,15 +350,11 @@ namespace Library.Migrations
                 {
                     b.HasOne("Library.Models.Room", "Room")
                         .WithMany("Books")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoomId");
 
                     b.HasOne("Library.Models.Shelf", "Shelf")
                         .WithMany("Books")
-                        .HasForeignKey("ShelfId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShelfId");
 
                     b.HasOne("Library.Models.ApplicationUser", "User")
                         .WithMany()

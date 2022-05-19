@@ -4,7 +4,6 @@ using Library.Models;
 using System.Threading.Tasks;
 using Library.ViewModels;
 using System;
-
 namespace Library.Controllers
 {
   public class AccountController : Controller
@@ -34,8 +33,8 @@ namespace Library.Controllers
     public async Task<ActionResult> Register(RegisterViewModel model)
     {
       var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FullName = model.FullName };
-      Room room = new Room { Name = "Living Room", Background = "room.jpg", Scale = "1" };
-      Shelf shelf = new Shelf() { Room = room, Top = "120px", Left = "60px", Height = "105px", Width = "125px" };
+      Room room = new Room { Name = "Living Room", Background = "room.jpg", Width = "796px" };
+      Shelf shelf = new Shelf() { Room = room, Top = "138px", Left = "58px", Height = "109px", Width = "240px" };
       IdentityResult result = await _userManager.CreateAsync(user, model.Password);
       if (result.Succeeded)
       {

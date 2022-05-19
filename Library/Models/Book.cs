@@ -76,21 +76,5 @@ namespace Library.Models
       Book book = new Book { Title = Title, Subtitle = Subtitle, Authors = Authors, Publisher = Publisher, PublishedDate = PublishedDate, Language = Language, Categories = Categories, Description = Description, ISBN_10 = ISBN_10, ISBN_13 = ISBN_13, PageCount = PageCount, ImgID = resultParse["id"].ToString(), Rating = Rating };
       return book;
     }
-    public static void Post(Book book)
-    {
-      string jsonBook = JsonConvert.SerializeObject(book);
-      var apiCallTask = ApiHelper.Post(jsonBook);
-    }
-
-    public static void Put(Book book)
-    {
-      string jsonBook = JsonConvert.SerializeObject(book);
-      var apiCallTask = ApiHelper.Put(book.BookId, jsonBook);
-    }
-
-    public static void Delete(int id)
-    {
-      var apiCallTask = ApiHelper.Delete(id);
-    }
   }
 }

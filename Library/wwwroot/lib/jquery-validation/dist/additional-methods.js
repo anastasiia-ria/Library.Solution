@@ -163,12 +163,12 @@
    * - Next 2 characters - location code (letters and digits)
    *   a. shall not start with '0' or '1'
    *   b. second character must be a letter ('O' is not allowed) or digit ('0' for test (therefore not allowed), '1' denoting passive participant, '2' typically reverse-billing)
-   * - Last 3 characters - branch code, optional (shall not start with 'X' except in case of 'XXX' for primary office) (letters and digits)
+   * - Last 3 characters - branch code, optional (shall not start with 'x' except in case of 'xxx' for primary office) (letters and digits)
    */
   $.validator.addMethod(
     "bic",
     function (value, element) {
-      return this.optional(element) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(X{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test(value.toUpperCase());
+      return this.optional(element) || /^([A-Z]{6}[A-Z2-9][A-NP-Z1-9])(x{3}|[A-WY-Z0-9][A-Z0-9]{2})?$/.test(value.toUpperCase());
     },
     "Please specify a valid BIC code"
   );
@@ -738,7 +738,7 @@
           leadingZeroes = false;
         }
         if (!leadingZeroes) {
-          ibancheckdigits += "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(charAt);
+          ibancheckdigits += "0123456789ABCDEFGHIJKLMNOPQRSTUVWxYZ".indexOf(charAt);
         }
       }
 
@@ -832,7 +832,7 @@
    *
    * The NIE is the equivalent of a Spaniards Número de Identificación Fiscal (NIF) which serves as a fiscal
    * identification number. The CIF number (Certificado de Identificación Fiscal) is equivalent to the NIF, but applies to
-   * companies rather than individuals. The NIE consists of an 'X' or 'Y' followed by 7 or 8 digits then another letter.
+   * companies rather than individuals. The NIE consists of an 'x' or 'Y' followed by 7 or 8 digits then another letter.
    */
   $.validator.addMethod(
     "nieES",
@@ -843,8 +843,8 @@
         return true;
       }
 
-      var nieRegEx = new RegExp(/^[MXYZ]{1}[0-9]{7,8}[TRWAGMYFPDXBNJZSQVHLCKET]{1}$/gi);
-      var validChars = "TRWAGMYFPDXBNJZSQVHLCKET",
+      var nieRegEx = new RegExp(/^[MxYZ]{1}[0-9]{7,8}[TRWAGMYFPDxBNJZSQVHLCKET]{1}$/gi);
+      var validChars = "TRWAGMYFPDxBNJZSQVHLCKET",
         letter = value.substr(value.length - 1).toUpperCase(),
         number;
 
@@ -855,10 +855,10 @@
         return false;
       }
 
-      // X means same number
+      // x means same number
       // Y means number + 10000000
       // Z means number + 20000000
-      value = value.replace(/^[X]/, "0").replace(/^[Y]/, "1").replace(/^[Z]/, "2");
+      value = value.replace(/^[x]/, "0").replace(/^[Y]/, "1").replace(/^[Z]/, "2");
 
       number = value.length === 9 ? value.substr(0, 8) : value.substr(0, 9);
 
@@ -888,12 +888,12 @@
 
       // Test NIF
       if (/^[0-9]{8}[A-Z]{1}$/.test(value)) {
-        return "TRWAGMYFPDXBNJZSQVHLCKE".charAt(value.substring(8, 0) % 23) === value.charAt(8);
+        return "TRWAGMYFPDxBNJZSQVHLCKE".charAt(value.substring(8, 0) % 23) === value.charAt(8);
       }
 
       // Test specials NIF (starts with K, L or M)
       if (/^[KLM]{1}/.test(value)) {
-        return value[8] === "TRWAGMYFPDXBNJZSQVHLCKE".charAt(value.substring(8, 1) % 23);
+        return value[8] === "TRWAGMYFPDxBNJZSQVHLCKE".charAt(value.substring(8, 1) % 23);
       }
 
       return false;
@@ -1075,7 +1075,7 @@
   $.validator.addMethod(
     "postalCodeCA",
     function (value, element) {
-      return this.optional(element) || /^[ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] *\d[ABCEGHJKLMNPRSTVWXYZ]\d$/i.test(value);
+      return this.optional(element) || /^[ABCEGHJKLMNPRSTVxY]\d[ABCEGHJKLMNPRSTVWxYZ] *\d[ABCEGHJKLMNPRSTVWxYZ]\d$/i.test(value);
     },
     "Please specify a valid postal code"
   );
@@ -1101,13 +1101,13 @@
   $.validator.addMethod(
     "postcodeUK",
     function (value, element) {
-      return this.optional(element) || /^((([A-PR-UWYZ][0-9])|([A-PR-UWYZ][0-9][0-9])|([A-PR-UWYZ][A-HK-Y][0-9])|([A-PR-UWYZ][A-HK-Y][0-9][0-9])|([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWXY]))\s?([0-9][ABD-HJLNP-UW-Z]{2})|(GIR)\s?(0AA))$/i.test(value);
+      return this.optional(element) || /^((([A-PR-UWYZ][0-9])|([A-PR-UWYZ][0-9][0-9])|([A-PR-UWYZ][A-HK-Y][0-9])|([A-PR-UWYZ][A-HK-Y][0-9][0-9])|([A-PR-UWYZ][0-9][A-HJKSTUW])|([A-PR-UWYZ][A-HK-Y][0-9][ABEHMNPRVWxY]))\s?([0-9][ABD-HJLNP-UW-Z]{2})|(GIR)\s?(0AA))$/i.test(value);
     },
     "Please specify a valid UK postcode"
   );
 
   /*
-   * Lets you say "at least X inputs that match selector Y must be filled."
+   * Lets you say "at least x inputs that match selector Y must be filled."
    *
    * The end result is that neither of these inputs:
    *
@@ -1150,7 +1150,7 @@
   );
 
   /*
-   * Lets you say "either at least X inputs that match selector Y must be filled,
+   * Lets you say "either at least x inputs that match selector Y must be filled,
    * OR they must all be skipped (left blank)."
    *
    * The end result, is that none of these inputs:
@@ -1241,13 +1241,13 @@
         regex;
 
       if (!includeTerritories && !includeMilitary) {
-        regex = "^(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY])$";
+        regex = "^(A[KLRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[Nx]|UT|V[AT]|W[AIVY])$";
       } else if (includeTerritories && includeMilitary) {
-        regex = "^(A[AEKLPRSZ]|C[AOT]|D[CE]|FL|G[AU]|HI|I[ADLN]|K[SY]|LA|M[ADEINOPST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])$";
+        regex = "^(A[AEKLPRSZ]|C[AOT]|D[CE]|FL|G[AU]|HI|I[ADLN]|K[SY]|LA|M[ADEINOPST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[Nx]|UT|V[AIT]|W[AIVY])$";
       } else if (includeTerritories) {
-        regex = "^(A[KLRSZ]|C[AOT]|D[CE]|FL|G[AU]|HI|I[ADLN]|K[SY]|LA|M[ADEINOPST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])$";
+        regex = "^(A[KLRSZ]|C[AOT]|D[CE]|FL|G[AU]|HI|I[ADLN]|K[SY]|LA|M[ADEINOPST]|N[CDEHJMVY]|O[HKR]|P[AR]|RI|S[CD]|T[Nx]|UT|V[AIT]|W[AIVY])$";
       } else {
-        regex = "^(A[AEKLPRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[NX]|UT|V[AT]|W[AIVY])$";
+        regex = "^(A[AEKLPRZ]|C[AOT]|D[CE]|FL|GA|HI|I[ADLN]|K[SY]|LA|M[ADEINOST]|N[CDEHJMVY]|O[HKR]|PA|RI|S[CD]|T[Nx]|UT|V[AT]|W[AIVY])$";
       }
 
       regex = caseSensitive ? new RegExp(regex) : new RegExp(regex, "i");
@@ -1309,7 +1309,7 @@
         return false;
       }
 
-      var LL = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"],
+      var LL = ["A", "B", "C", "D", "E", "F", "G", "H", "J", "K", "L", "M", "N", "P", "R", "S", "T", "U", "V", "W", "x", "Y", "Z"],
         VL = [1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 7, 9, 2, 3, 4, 5, 6, 7, 8, 9],
         FL = [8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2],
         rs = 0,
@@ -1344,7 +1344,7 @@
       }
       cd = rs % 11;
       if (cd === 10) {
-        cd = "X";
+        cd = "x";
       }
       if (cd === cdv) {
         return true;

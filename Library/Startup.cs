@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Library.Models;
-
 namespace Library
 {
   public class Startup
@@ -25,11 +24,12 @@ namespace Library
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddMvc();
-
+      services.AddRouting(options => options.LowercaseUrls = true);
       services.AddEntityFrameworkMySql()
         .AddDbContext<LibraryContext>(options => options
         .UseMySql(Configuration["ConnectionStrings:DefaultConnection"], ServerVersion.AutoDetect(Configuration["ConnectionStrings:DefaultConnection"])));
-
+      services.AddControllers().AddNewtonsoftJson(x =>
+      x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
       services.AddDbContext<LibraryContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Security")));
 
       services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -38,13 +38,14 @@ namespace Library
       services.AddScoped<Microsoft.AspNetCore.Identity.IUserClaimsPrincipalFactory<ApplicationUser>, AppClaimsPrincipalFactory>();
       services.Configure<IdentityOptions>(options =>
       {
-        options.Password.RequireDigit = false;
-        options.Password.RequiredLength = 0;
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 8;
         options.Password.RequireLowercase = false;
         options.Password.RequireNonAlphanumeric = false;
-        options.Password.RequireUppercase = false;
+        options.Password.RequireUppercase = true;
         options.Password.RequiredUniqueChars = 0;
       });
+      services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/Index");
     }
 
     public void Configure(IApplicationBuilder app)

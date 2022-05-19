@@ -13,8 +13,18 @@
         </div>
         <div class="navbar-nav">
           @if (User.Identity.Name != null)  
-        {
-            <a href="@Url.Action("Index", "Account")" title="Account" id="user-name" class="nav-link nav-item">Hello, @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value)!</a>
+          {
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Hello, @(User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value)!
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @using (Html.BeginForm("LogOff", "Account"))
+                {
+                    <li><input type="submit" class="dropdown-item" value="Log Out"/></li>
+                }
+              </ul>
+            </li>
           }
           else
           {
@@ -23,7 +33,6 @@
             </a>
           }
         </div>
-        
       </div>
     </div>
   </nav>

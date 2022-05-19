@@ -31,7 +31,7 @@ namespace Library.Controllers
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       ViewBag.room = _db.Rooms.FirstOrDefault(room => room.RoomId == id) ?? _db.Rooms.FirstOrDefault(room => room.User == currentUser);
-      ViewBag.image = ViewBag.room.Background;
+      ViewBag.image = ViewBag.room != null ? ViewBag.room.Background : "";
       ViewBag.Books = _db.Books.Where(book => book.User == currentUser).ToList();
       List<Room> model = _db.Rooms.Where(entry => entry.User.Id == currentUser.Id).ToList();
       return View(model);
@@ -47,8 +47,8 @@ namespace Library.Controllers
     {
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
-      Room room = new Room() { Name = form["Name"], User = currentUser, Background = "room.jpg", Scale = "1" };
-      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px", Height = "105px", Width = "125px" };
+      Room room = new Room { Name = form["Name"], User = currentUser, Background = "room.jpg", Width = "796px" };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "138px", Left = "58px", Height = "109px", Width = "240px" };
       _db.Shelves.Add(shelf);
       _db.Rooms.Add(room);
       _db.SaveChanges();
@@ -64,15 +64,6 @@ namespace Library.Controllers
     {
       var thisRoom = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
       return View(thisRoom);
-    }
-
-    [HttpPost]
-    public JsonResult Scale(int id, string scale)
-    {
-      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
-      room.Scale = scale;
-      _db.SaveChanges();
-      return Json(new { });
     }
 
     [HttpPost]

@@ -40,7 +40,7 @@ namespace Library.Controllers
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
-      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px", Height = "105px", Width = "225px" };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "138px", Left = "58px", Height = "109px", Width = "240px" };
       _db.Shelves.Add(shelf);
       _db.SaveChanges();
       return Json(new { shelf = shelf });

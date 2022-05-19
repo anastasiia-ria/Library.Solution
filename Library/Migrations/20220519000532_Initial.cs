@@ -161,6 +161,9 @@ namespace Library.Migrations
                     RoomId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Scale = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Width = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Background = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
@@ -181,6 +184,10 @@ namespace Library.Migrations
                     ShelfId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Left = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Top = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Height = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Width = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     RoomId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true)
                 },
@@ -208,6 +215,7 @@ namespace Library.Migrations
                     BookId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Title = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Subtitle = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Authors = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Publisher = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     PublishedDate = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
@@ -216,8 +224,12 @@ namespace Library.Migrations
                     ISBN_13 = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     ImgID = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     PageCount = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ShelfId = table.Column<int>(type: "int", nullable: false),
-                    RoomId = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Categories = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Language = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    Rating = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
+                    ShelfId = table.Column<int>(type: "int", nullable: true),
+                    RoomId = table.Column<int>(type: "int", nullable: true),
                     UserId = table.Column<string>(type: "varchar(255) CHARACTER SET utf8mb4", nullable: true)
                 },
                 constraints: table =>
@@ -234,13 +246,13 @@ namespace Library.Migrations
                         column: x => x.RoomId,
                         principalTable: "Rooms",
                         principalColumn: "RoomId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Books_Shelves_ShelfId",
                         column: x => x.ShelfId,
                         principalTable: "Shelves",
                         principalColumn: "ShelfId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

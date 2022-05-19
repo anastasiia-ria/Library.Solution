@@ -3,97 +3,98 @@
 }
 
 @using Library.Models;
-<nav class="navbar navbar-expand-lg navbar-light" id="rooms-nav">
-  <div class="container">
-    <div class="navbar-nav">
-      <div class="nav-item ">
-        <a type="button" title = "Add Room" class="btn btn-light add-room @(Model.Count == 0 ? "show" : "")" data-bs-toggle="modal" data-bs-target="#addRoom">+</a>
-      </div>
-      @foreach(Room room in Model)
-      {
-        <div class="nav-item ">
-          @Html.ActionLink(@room.Name, null, null, new {id = room.RoomId}, new {@class=(room.RoomId == ViewBag.room.RoomId ? "nav-link active" : "nav-item nav-link")})
-          @using (Html.BeginForm("Delete", "Rooms", new { id = room.RoomId},FormMethod.Post ))
-          {
-            <button type="submit" class="delete-room btn btn-light corner-icon">✕</button>
-          }
-        </div>
-      }
-    </div>
-    <div id="open-filter">
-      <div id="clear">Clear</div>
-      <i class="fa fa-search"></i>
-    </div>
-  </div>
-</nav>
-<div class="container room-container">
+
   @Html.Partial("AddRoom.cshtml")
   @if (Model.Count != 0) {
-    <div class="rooms" @*style="background-image:url(../../img/background/@ViewBag.room.Background)"*@>
-      <div id="filter">
-        <form class="advanced-search-inputs">
-          <div class="form-floating">
-            <input class="form-control" type="text" id="title" placeholder="Title">
-            <label>Title</label>
-          </div>
-          <div class="form-floating">
-            <input class="form-control" type="text" id="authors" placeholder="Authors">
-            <label>Authors</label>
-          </div>
-          <div class="form-floating">
-            <input class="form-control" type="text" id="publisher" placeholder="Publisher"> 
-            <label>Publisher</label>
-          </div>
-          <div class="form-floating">
-            <input class="form-control" type="number" id="isbn" placeholder="ISBN"> 
-            <label>ISBN</label>
-          </div>
-          <div class="form-floating">
-            <select class="form-select" id="status">
-              <option value="">None</option>
-              <option value="Not Started">Not Started</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Finished">Finished</option>
-            </select>
-            <label>Status</label>
-          </div>
-          <button class="input-group-text" type="submit"><i class="fa fa-search"></i></button>
-        </form>
-      </div>
-      <img class="room-background" src="~/img/background/@ViewBag.room.Background">
-      <div class="room-overlay">
-        <div id="room-@(ViewBag.room.RoomId)" class="room" style="transform: scale(@ViewBag.room.Scale);">
-          @foreach (var shelf in @ViewBag.room.Shelves)
-          {
-            <div id="shelf-@(shelf.ShelfId)" class="shelf draggable" style="touch-action: none; left: @(shelf.Left); top: @(shelf.Top)">
-              <div class="books select-book" style="width:@(shelf.Width); height:@(shelf.Height);">
-                @foreach (var book in shelf.Books)
-                {
-                  <div style="background-image: url('https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1');" class="book" id="book-@(book.BookId)">
-                  </div>
-                }
+    <div class="room-container">
+      <div class="rooms">
+        <nav class="navbar navbar-expand-lg navbar-light" id="rooms-nav">
+            <div class="navbar-nav">
+              <div class="nav-item ">
+                <a type="button" title = "Add Room" class="btn btn-light add-room @(Model.Count == 0 ? "show" : "")" data-bs-toggle="modal" data-bs-target="#addRoom"><i class="fa fa-plus" aria-hidden="true"></i></a>
               </div>
-              <span class="delete-shelf btn btn-light corner-icon">✕</span>
-              <span class="btn btn-light add-books-to-room corner-icon" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</span>
-              <span class="handle btn btn-light corner-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></span>
-              <input type="hidden" name="shelf" value="@(shelf.ShelfId)">
-              <input type="hidden" name="room" value="@(ViewBag.room.RoomId)">
+              @foreach(Room room in Model)
+              {
+                <div class="nav-item ">
+                  @Html.ActionLink(@room.Name, null, null, new {id = room.RoomId}, new {@class=(room.RoomId == ViewBag.room.RoomId ? "nav-link active" : "nav-item nav-link")})
+                  @using (Html.BeginForm("Delete", "Rooms", new { id = room.RoomId},FormMethod.Post ))
+                  {
+                    <button type="submit" class="delete-room btn btn-light corner-icon"><span class="fa fa-close"></span></button>
+                  }
+                </div>
+              }
             </div>
-          }
+            <div id="open-filter">
+              <div id="clear">Clear</div>
+              <i class="fa fa-search" style="line-height:16px"></i>
+            </div>
+        </nav>
+        <div id="filter">
+          <form class="filter-inputs">
+            <div class="form-floating">
+              <input class="form-control" type="text" id="title" placeholder="Title">
+              <label>Title</label>
+            </div>
+            <div class="form-floating">
+              <input class="form-control" type="text" id="authors" placeholder="Authors">
+              <label>Authors</label>
+            </div>
+            <div class="form-floating">
+              <input class="form-control" type="text" id="publisher" placeholder="Publisher"> 
+              <label>Publisher</label>
+            </div>
+            <div class="form-floating">
+              <input class="form-control" type="number" id="isbn" placeholder="ISBN"> 
+              <label>ISBN</label>
+            </div>
+            <div class="form-floating">
+              <select class="form-select" id="status">
+                <option value="">None</option>
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Finished">Finished</option>
+              </select>
+              <label>Status</label>
+            </div>
+            <button class="btn btn-light" type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
+        <img class="room-background" src="~/img/background/@ViewBag.room.Background">
+        <div class="room-overlay">
+          <div id="room-@(ViewBag.room.RoomId)" class="room">
+            @foreach (var shelf in @ViewBag.room.Shelves)
+            {
+              <div id="shelf-@(shelf.ShelfId)" class="shelf draggable" style="touch-action: none; left: @(shelf.Left); top: @(shelf.Top)">
+                <div class="books select-book" style="width:@(shelf.Width); height:@(shelf.Height);">
+                  @foreach (var book in shelf.Books)
+                  {
+                    <div style="background-image: url('https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1');" class="book" id="book-@(book.BookId)">
+                    </div>
+                  }
+                </div>
+                <span class="delete-shelf btn btn-light corner-icon"><span class="fa fa-close"></span></span>
+                <span class="btn btn-light add-books-to-room corner-icon" data-bs-toggle="modal" data-bs-target="#addBookToRoom"><i class="fa fa-plus" aria-hidden="true"></i></span>
+                <span class="handle btn btn-light corner-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></span>
+                <input type="hidden" name="shelf" value="@(shelf.ShelfId)">
+                <input type="hidden" name="room" value="@(ViewBag.room.RoomId)">
+              </div>
+            }
+          </div>
+        </div>
+        <a type="button" title="Add Shelf" class="btn btn-light add-shelf"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        <a type="button" title="Upload Background" class="btn btn-light change-background" data-bs-toggle="modal" data-bs-target="#addBackground"><i class="fa fa-upload" aria-hidden="true"></i></a>
+
+        <a type="button" title="Edit Room" id="edit-room" class="btn btn-light"><i class="fa fa-gear fa-spin"></i></a>
+        <div class="hidden scale">
+          <a title="Show Grid" type="button"class="grid btn btn-light"><span class='bi bi-grid-3x3-gap-fill'></span></a>
+          <a title="Zoom In" class="btn btn-light" id="plus"><i class="fa fa-plus" aria-hidden="true"></i></a>
+          <a title="Zoom Out" class="btn btn-light" id="minus"><i class="fa fa-minus" aria-hidden="true"></i></a>
         </div>
       </div>
-      <a type="button" title="Add Shelf" class="btn btn-light add-shelf">+</a>
-      <a type="button" title="Upload Background" class="btn btn-light change-background" data-bs-toggle="modal" data-bs-target="#addBackground"><i class="fa fa-upload" aria-hidden="true"></i></a>
-
-      <a type="button" title="Edit Room" id="edit-room" class="btn btn-light"><i class="fa fa-gear fa-spin"></i></a>
-      <div class="hidden scale">
-        <a title="Show Grid" type="button"class="grid btn btn-light"><span class='bi bi-grid-3x3-gap-fill'></span></a>
-        <a title="Zoom In" class="btn btn-light" id="plus">+</a>
-        <a title="Zoom Out" class="btn btn-light" id="minus">-</a>
-      </div>
-    </div>
-    @Html.Partial("AddBook.cshtml")
-    @Html.Partial("AddBackground.cshtml", new Library.ViewModels.BackgroundViewModel())
-    @Html.Partial("BookDetails.cshtml")
+      @Html.Partial("AddBook.cshtml")
+      @Html.Partial("AddBackground.cshtml", new Library.ViewModels.BackgroundViewModel())
+      @Html.Partial("BookDetails.cshtml")
+    </div> 
+  } else {
+    <a type="button" title = "Add Room" class="btn btn-light add-room show" data-bs-toggle="modal" data-bs-target="#addRoom" style="width:50px;  margin:15px auto;"><i class="fa fa-plus" aria-hidden="true"></i></a>
   }
-</div> 

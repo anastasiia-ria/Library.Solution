@@ -92,6 +92,7 @@ namespace Library.Controllers
     public JsonResult Details(int id)
     {
       Book thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
+      Console.WriteLine(thisBook.Title);
       return Json(new { thisBook = thisBook });
     }
 
