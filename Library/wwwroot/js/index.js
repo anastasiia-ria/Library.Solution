@@ -34,7 +34,7 @@ Pagination.prototype.clear = function () {
 
 let search = new Search();
 let pagination = new Pagination();
-
+let grid = false;
 function showRating(rating) {
   let stars = "";
   for (let i = 1; i <= 5; i++) {
@@ -46,6 +46,48 @@ function showRating(rating) {
     rating--;
   }
   return stars;
+}
+
+function setScale() {
+  let id = parseInt($(".room").attr("id").slice(5));
+  console.log(id);
+  $.ajax({
+    type: "GET",
+    url: "../../Rooms/SetScale",
+    data: { id: id },
+    success: function (result) {
+      let oldWidth = result.width;
+      let newWidth = $(".room").width();
+      let scale = newWidth / oldWidth;
+      $(".room").css("transform", `scale(${scale})`);
+      console.log(scale);
+    },
+  });
+}
+
+function showBookDetails(id) {
+  $("#bookDetails").modal("show");
+  $.ajax({
+    type: "GET",
+    url: "../../Books/Details",
+    data: { id: id },
+    success: function (result) {
+      var book = result.thisBook;
+      $("#book-title").text(book.title);
+      $("#book-description").html(book.description);
+      $("#book-authors").text(book.authors);
+      $("#book-publisher").text(book.publisher);
+      $("#book-publishedDate").text(book.publishedDate);
+      $("#book-pageCount").text(book.pageCount);
+      $("#book-isbn10").text(book.isbN_10);
+      $("#book-isbn13").text(book.isbN_13);
+      $("#book-language").text(book.language);
+      $("#book-categories").text(book.categories);
+      $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1`);
+      $(".rating").html(`${showRating(book.rating)}`);
+      $(".remove-from-shelf").attr("data-book-id", book.bookId);
+    },
+  });
 }
 function searchAPI() {
   $.ajax({
@@ -95,7 +137,7 @@ function paginate() {
       if (pagination.use === "index") {
         result.books.forEach(function (book) {
           $("#books-page").append(`<div class="card" id="book-${book.bookId}"">
-          <button type="submit" class="btn btn-light delete-book">✕</button>
+          <button type="submit" class="btn btn-light delete-book corner-icon">✕</button>
           <img class="card-img-top" src="https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
           <div class="card-body">
             <h5 class="card-title cut-text">${book.title}</h5>
@@ -142,10 +184,10 @@ function scaleFunc(direction) {
     scale = current + 0.1;
   }
   $(".room").css("transform", `scale(${scale})`);
-  let dots = 20 * scale;
-  $(".dotted").css("background-size", `${dots}px, ${dots}px`);
+  // let dots = 20 * scale;
+  // $(".dotted").css("background-size", `${dots}px, ${dots}px`);
   let id = $(".room").attr("id").slice(5);
-  console.log(id);
+  console.log(scale);
   $.ajax({
     type: "POST",
     url: "../../Rooms/Scale",
@@ -155,6 +197,7 @@ function scaleFunc(direction) {
 }
 
 $(document).ready(function () {
+  setScale();
   $("#edit-books").click(function () {
     $(".delete-book").toggle();
   });
@@ -235,6 +278,40 @@ $(document).ready(function () {
     });
   });
 
+  $(document).on("click", ".start-edit", function (event) {
+    event.preventDefault();
+    $(".edit-details").show();
+    $(".show-details").hide();
+    let id = parseInt($(this).attr("data-book-id"));
+    console.log(id);
+    $.ajax({
+      type: "GET",
+      url: "../../Books/Details",
+      data: { id: id },
+      success: function (result) {
+        var book = result.thisBook;
+        tinymce.init({
+          selector: "#myTextarea",
+        });
+        console.log(book);
+        $("input[name='Title']").val(book.title);
+        $("input[name='Subtitle']").val(book.subtitle);
+        $("input[name='Authors']").val(book.authors);
+        $("textarea[name='Description']").val(book.description);
+        $("input[name='Publisher']").val(book.publisher);
+        $("input[name='PublishedDate']").val(book.publishedDate);
+        $("input[name='ISBN_10']").val(book.isbN_10);
+        $("input[name='ISBN_13']").val(book.isbN_13);
+        $("input[name='Categories']").val(book.categories);
+        $("input[name='Language']").val(book.language);
+        $("input[name='PageCount']").val(book.pageCount);
+        $("input[name='ImgID']").val(book.imgID);
+        $("input[name='Rating']").val(book.rating);
+        $("input[name='BookId']").val(book.bookId);
+      },
+    });
+  });
+
   $("#filter").on("submit", function (event) {
     event.preventDefault();
 
@@ -291,8 +368,8 @@ $(document).ready(function () {
 
   $(document).on("click", ".add-books-to-room", function (event) {
     event.preventDefault();
-    let shelf = parseInt($(this).parent().next().val());
-    let room = parseInt($(this).parent().next().next().val());
+    let shelf = parseInt($(this).parent().children("input[name='shelf']").val());
+    let room = parseInt($(this).parent().children("input[name='room']").val());
     console.log(shelf + " " + room);
     $("#books-to-add").empty();
     pagination.clear();
@@ -307,11 +384,22 @@ $(document).ready(function () {
     let id = $(this).attr("id").slice(6);
     let top = $(this).css("top");
     let left = $(this).css("left");
+    let bgWidth = $(".room-background").width();
+    let bgHeight = $(".room-background").height();
+
+    let shWidth = $(this).width();
+    let shHeight = $(this).height();
+    relation = shWidth / bgWidth;
+    console.log(relation);
+    let width = $(this).css("width");
+    let height = $(this).css("height");
+
+    console.log(width + " " + height);
     console.log("Top: " + top + ", left: " + left);
     $.ajax({
       type: "POST",
       url: "../../Shelves/Drag",
-      data: { id: id, top: top, left: left },
+      data: { id: id, top: top, left: left, width: width, height: height, roomWidth: bgWidth },
       success: function () {},
     });
   });
@@ -326,16 +414,16 @@ $(document).ready(function () {
       success: function (result) {
         let shelf = result.shelf;
         $(".room").append(`<div id="shelf-${shelf.shelfId}" class="shelf draggable" style="touch-action: none; left: ${shelf.left}; top: ${shelf.top};">
-        <div class="books select-book"></div>
-        <button type="button" class="delete-shelf btn-light">✕</button>
-        <div class="books-overlay handle">
-            <button type="button" class="btn btn-light add-books-to-room" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</button>
-          </div>
+        <div class="books resize select-book" style="width:${shelf.width}; height:${shelf.height}"></div>
+        <span class="delete-shelf btn btn-light corner-icon">✕</span>
+        <span class="btn btn-light add-books-to-room corner-icon" data-bs-toggle="modal" data-bs-target="#addBookToRoom">+</span>
+        <span class="handle btn btn-light corner-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></span>
         <input type="hidden" name="shelf" value="${shelf.shelfId}">
         <input type="hidden" name="room" value="${shelf.roomId}">
       </div>`);
         $(".delete-shelf").show();
         $(".add-books-to-room").show();
+        $(".handle").show();
         var $draggables = $(".draggable").draggabilly({
           handle: ".handle",
           containment: true,
@@ -365,34 +453,14 @@ $(document).ready(function () {
         $(`#book-${id}`).remove();
         console.log(`#book-${id}`);
         paginate();
-        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=1');" class="book" id="book-${id}"></div>`);
+        $(`#shelf-${shelf} > .books`).append(`<div style="background-image: url('https://books.google.com/books/content?id=${result.img}&printsec=frontcover&img=1&zoom=1');" class="book back" id="book-${id}"></div>`);
       },
     });
   });
 
   $(".show-book-details").click(function () {
     let id = parseInt($(this).attr("id").slice(5));
-    $.ajax({
-      type: "GET",
-      url: "../../Books/Details",
-      data: { id: id },
-      success: function (result) {
-        var book = result.thisBook;
-        $("#book-title").text(book.title);
-        $("#book-subtitle").text(book.subtitle);
-        $("#book-description").html(book.description);
-        $("#book-authors").text(book.authors);
-        $("#book-publisher").text(book.publisher);
-        $("#book-publishedDate").text(book.publishedDate);
-        $("#book-pageCount").text(book.pageCount);
-        $("#book-isbn10").text(book.isbN_10);
-        $("#book-isbn13").text(book.isbN_13);
-        $("#book-language").text(book.language);
-        $("#book-categories").text(book.categories);
-        $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1`);
-        $(".rating").html(`${showRating(book.rating)}`);
-      },
-    });
+    showBookDetails(id);
   });
 
   $("#search-page-prev").click(function () {
@@ -457,20 +525,38 @@ $(document).ready(function () {
     searchAPI();
   });
 
+  $(".grid").click(function () {
+    $(".room-overlay").toggleClass("dotted");
+    grid = !grid;
+    if (grid) {
+      var $draggables = $(".draggable").draggabilly({
+        handle: ".handle",
+        containment: true,
+        grid: [20, 20],
+      });
+    } else {
+      var $draggables = $(".draggable").draggabilly({
+        handle: ".handle",
+        containment: true,
+      });
+    }
+  });
+
   $("#edit-room").click(function () {
     $(".delete-shelf").toggle();
     $(".delete-room").toggle();
     $(".add-shelf").toggle();
     $(".add-room").toggle();
+    $(".handle").toggle();
+    $(".add-books-to-room").toggle();
     $(".change-background").toggle();
     $(".scale").toggleClass("hidden");
-    $(".books-overlay").toggleClass("hidden");
-    $(".books-overlay").toggleClass("handle");
-    $(".room-overlay").toggleClass("dotted");
+    $(".book").toggleClass("back");
+    $(".books").toggleClass("resize");
+    $(".room-overlay").removeClass("dotted");
     var $draggables = $(".draggable").draggabilly({
       handle: ".handle",
       containment: true,
-      grid: [20, 20],
     });
   });
   $(document).on("click", ".delete-shelf", function (event) {
@@ -489,6 +575,19 @@ $(document).ready(function () {
     });
   });
 
+  window.addEventListener(
+    "resize",
+    function (event) {
+      let bgWidth = $(".room-background").width();
+      $(".rooms").css("width", bgWidth + "px");
+      setScale();
+    },
+    true
+  );
+
+  let bgWidth = $(".room-background").width();
+  $(".rooms").css("width", bgWidth + "px");
+
   $(document).on("click", "#minus", function () {
     scaleFunc("minus");
   });
@@ -502,9 +601,13 @@ $(document).ready(function () {
     $(".delete-room").toggle();
     $(".add-shelf").toggle();
     $(".add-room").toggle();
-    $(".books-overlay").toggleClass("hidden");
-    $(".books-overlay").toggleClass("handle");
-    $(".room-overlay").toggleClass("dotted");
+    $(".handle").toggle();
+    $(".add-books-to-room").toggle();
+    $(".change-background").toggle();
+    $(".scale").toggleClass("hidden");
+    $(".book").toggleClass("back");
+    $(".books").toggleClass("resize");
+    $(".room-overlay").removeClass("dotted");
     var $draggables = $(".draggable").draggabilly({
       handle: ".handle",
       containment: true,
@@ -513,7 +616,6 @@ $(document).ready(function () {
   });
 
   $(document).on("change", "#addBackground input[type='file']", function () {
-    $("#imagepreview").show();
     if ($(this)[0].files && $(this)[0].files[0]) {
       var reader = new FileReader();
       reader.onload = function (e) {
@@ -523,30 +625,25 @@ $(document).ready(function () {
     }
   });
   $(document).on("submit", "#addBackground form", function () {
-    $("#imagepreview").hide();
     $("#imagepreview").attr("src", "");
   });
 });
 
 $(document).on("click", ".select-book > .book", function () {
-  $("#bookDetails").modal("show");
   let id = parseInt($(this).attr("id").slice(5));
+  showBookDetails(id);
+});
+
+$(document).on("click", ".remove-from-shelf", function () {
+  let id = parseInt($(this).attr("data-book-id"));
+  console.log(id);
   $.ajax({
-    type: "GET",
-    url: "../../Books/Details",
+    type: "POST",
+    url: "../../Books/RemoveLocation",
     data: { id: id },
-    success: function (result) {
-      var book = result.thisBook;
-      $("#book-title").text(book.title);
-      $("#book-description").html(book.description);
-      $("#book-authors").text(book.authors);
-      $("#book-publisher").text(book.publisher);
-      $("#book-publishedDate").text(book.publishedDate);
-      $("#book-pageCount").text(book.pageCount);
-      $("#book-isbn10").text(book.isbN_10);
-      $("#book-isbn13").text(book.isbN_13);
-      $("#book-img").attr("src", `https://books.google.com/books/content?id=${book.imgID}&printsec=frontcover&img=1&zoom=1`);
-      $(".rating").html(`${showRating(book.rating)}`);
+    success: function () {
+      $(`#book-${id}`).remove();
+      $("#bookDetails").modal("hide");
     },
   });
 });

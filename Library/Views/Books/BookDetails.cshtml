@@ -1,15 +1,18 @@
+@using Library.Models;
 <div class="modal fade" id="bookDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
+
+    @Html.Partial("EditDetails.cshtml", new Book())
+    <div class="modal-content show-details">
       <div class="modal-header">
         <h5 class="modal-title">Book Details</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
-        <div class="row">
+      <div class="modal-body ">
+        <div class="row border">
           <div class="col-8">
             <h2 id="book-title"></h2>
-            <h3 id="book-subtitle"></h3>
+            <h3 id="book-subtitle" class="mb-5"></h3>
             <h5>By </span></span><span id="book-authors"></span></h5>
             <div class="row book-info-col">
               <div class="col-8">
@@ -36,14 +39,14 @@
             <div class="rating"></div>
           </div>
         </div>
-        <hr/>
-        <div class="row">
+        <div class="row border">
           <div id="book-description"></div>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="submit" class="btn btn-outline-secondary">Edit</button>
+        <button type="button" class="btn btn-outline-secondary start-edit">Edit</button>
       </div>
     </div>
   </div>
 </div>
+

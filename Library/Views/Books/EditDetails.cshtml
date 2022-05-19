@@ -1,0 +1,79 @@
+@model Library.Models.Book
+<div class="modal-content edit-details">
+  @using (Html.BeginForm("Edit", "Books", FormMethod.Post))
+  {
+  <div class="modal-header">
+    <h5 class="modal-title">Edit Details</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    @Html.HiddenFor(model => model.ImgID)
+    @Html.HiddenFor(model => model.Rating)
+    @Html.HiddenFor(model => model.BookId)
+    <div class="form-floating mb-3">
+        @Html.TextBoxFor(model => model.Title, new {required = "required", placeholder="Title", @class="form-control"})
+        <label>Title</label>
+    </div>
+    <div class="form-floating mb-3">
+        @Html.TextBoxFor(model => model.Subtitle, new {placeholder="Subtitle", @class="form-control"})
+        <label>Subtitle</label>
+    </div>
+    <div class="form-floating mb-3">
+      @Html.TextBoxFor(model => model.Authors, new {required = "required", placeholder="Authors", @class="form-control"})
+      <label>Authors</label>
+    </div>
+    <div class="form-floating mb-3">
+      @Html.TextAreaFor(model => model.Description, new {placeholder="Description", @class="form-control", rows=10, id="myTextarea" })
+      <Label>Description</Label>
+    </div>
+    <div class="row">
+      <div class="col">
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.Publisher, new {placeholder="Publisher", @class="form-control"})
+          <label>Publisher</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.ISBN_10, new {placeholder="ISBN 10", @class="form-control", type="number"})
+          <label>ISBN 10</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.Categories, new {placeholder="Categories", @class="form-control", type="text"})
+          <label>Categories</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.DropDownListFor(model => model.Status, new SelectList(new string[] {"Not Started", "In Progress", "Finished"}), htmlAttributes: new { @class = "form-select"})
+          <label>Status</label>
+        </div>
+      </div>
+      <div class="col">
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.PublishedDate, new {placeholder="Published Date", @class="form-control"})
+          <label>Published Date</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.ISBN_13, new {placeholder="ISBN 13", @class="form-control", type="number"})
+          <label>ISBN 13</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.PageCount, new {placeholder="Page Count", @class="form-control", type="number"})
+          <label>Page Count</label>
+        </div>
+
+        <div class="form-floating mb-3">
+          @Html.TextBoxFor(model => model.Language, new {placeholder="Language", @class="form-control", type="text"})
+          <label>Language</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" id="cancel-edit" class="btn btn-outline-secondary">Cancel</button>
+    <button type="submit" class="btn btn-outline-secondary">Edit</button>
+  </div>
+  }
+</div>

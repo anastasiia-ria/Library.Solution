@@ -79,16 +79,20 @@ namespace Library.Controllers
       _db.SaveChanges();
       return Json(new { img = book.ImgID });
     }
+    [HttpPost]
+    public JsonResult RemoveLocation(int id)
+    {
+      Book book = _db.Books.FirstOrDefault(book => book.BookId == id);
+      Book newBook = new Book() { Title = book.Title, Authors = book.Authors, Subtitle = book.Subtitle, Publisher = book.Publisher, Description = book.Description, PublishedDate = book.PublishedDate, ISBN_10 = book.ISBN_10, ISBN_13 = book.ISBN_13, ImgID = book.ImgID, PageCount = book.PageCount, Status = book.Status, Categories = book.Categories, Language = book.Language, Rating = book.Rating, User = book.User };
+      _db.Books.Remove(book);
+      _db.Books.Add(newBook);
+      _db.SaveChanges();
+      return Json(new { });
+    }
     public JsonResult Details(int id)
     {
       Book thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
-      Console.WriteLine(id);
       return Json(new { thisBook = thisBook });
-    }
-    public ActionResult Edit(int id)
-    {
-      var thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
-      return View(thisBook);
     }
 
     [HttpPost]
@@ -96,17 +100,12 @@ namespace Library.Controllers
     {
       _db.Entry(book).State = EntityState.Modified;
       _db.SaveChanges();
-      return RedirectToAction("Details", new { id = book.BookId });
+      return RedirectToAction("Index");
     }
 
+
+    [HttpPost]
     public ActionResult Delete(int id)
-    {
-      var thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
-      return View(thisBook);
-    }
-
-    [HttpPost, ActionName("Delete")]
-    public ActionResult DeleteConfirmed(int id)
     {
       var thisBook = _db.Books.FirstOrDefault(book => book.BookId == id);
       _db.Books.Remove(thisBook);

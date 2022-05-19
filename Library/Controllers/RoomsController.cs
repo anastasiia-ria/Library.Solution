@@ -113,7 +113,12 @@ namespace Library.Controllers
       }
       return uniqueFileName;
     }
-
+    public JsonResult SetScale(int id)
+    {
+      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
+      var width = room.Width;
+      return Json(new { width = width });
+    }
     public async Task<JsonResult> Filter(string title, string authors, string publisher, string isbn, string status)
     {
       Console.WriteLine(title + authors + publisher + isbn + status);

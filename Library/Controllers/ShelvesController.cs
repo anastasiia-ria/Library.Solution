@@ -40,19 +40,21 @@ namespace Library.Controllers
       var userId = this.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
       var currentUser = await _userManager.FindByIdAsync(userId);
       Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == id);
-      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px", Height = "105px", Width = "125px" };
+      Shelf shelf = new Shelf() { Room = room, User = currentUser, Top = "120px", Left = "60px", Height = "105px", Width = "225px" };
       _db.Shelves.Add(shelf);
       _db.SaveChanges();
       return Json(new { shelf = shelf });
     }
     [HttpPost]
-    public JsonResult Drag(int id, string top, string left, string width, string height)
+    public JsonResult Drag(int id, string top, string left, string width, string height, string roomWidth)
     {
       Shelf shelf = _db.Shelves.FirstOrDefault(shelf => shelf.ShelfId == id);
+      Room room = _db.Rooms.FirstOrDefault(room => room.RoomId == shelf.Room.RoomId);
       shelf.Top = top;
       shelf.Left = left;
       shelf.Width = width;
       shelf.Height = height;
+      room.Width = roomWidth;
       _db.SaveChanges();
       return Json(new { });
     }

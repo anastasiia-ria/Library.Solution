@@ -4,37 +4,38 @@
 
 @using Library.Models;
 @model List<Library.Models.Book>;
+<div class="container">
+  <button type="button" class="btn btn-light" data-bs-toggle="modal" id="start-search" data-bs-target="#addBookFromApi">+</button>
+  <button type="button" class="btn btn-light" id="edit-books"><i class="fa fa-gear fa-spin"></i></button>
 
-<h1 class="d-inline-block">Books</h1>
-<button type="button" class="btn btn-light" data-bs-toggle="modal" id="start-search" data-bs-target="#addBookFromApi">+</button>
-<i class="fa fa-gear fa-spin" id="edit-books" style="font-size:24px"></i>
 
-@if (@Model.Count == 0)
-{
-  <h3>No books have been added yet!</h3>
-}
-<div class="row books-row" id="books-page">
-  @foreach (Book book in Model)
+  @if (@Model.Count == 0)
   {
-    <div class="card show-book-details" id="book-@(book.BookId)" data-bs-toggle="modal" data-bs-target="#bookDetails">
-      <button type="submit" class="btn btn-light delete-book corner-icon">✕</button>
-      <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
-      <div class="card-body">
-        <h5 class="card-title cut-text">@book.Title</h5>
-        <p class="card-text cut-text">@book.Authors</p>
-      </div>
-    </div>
+    <h3>No books have been added yet!</h3>
   }
+  <div class="row books-row" id="books-page">
+    @foreach (Book book in Model)
+    {
+      <div class="card show-book-details" id="book-@(book.BookId)" data-bs-toggle="modal" data-bs-target="#bookDetails">
+        <button type="submit" class="btn btn-light delete-book corner-icon">✕</button>
+        <img class="card-img-top" src="https://books.google.com/books/content?id=@(book.ImgID)&printsec=frontcover&img=1&zoom=1" alt="Book thumbnail" height="240px" object-fit="contain">
+        <div class="card-body">
+          <h5 class="card-title cut-text">@book.Title</h5>
+          <p class="card-text cut-text">@book.Authors</p>
+        </div>
+      </div>
+    }
+  </div>
+  <nav class="mt-3 p-bottom">
+    <ul class="pagination justify-content-center">
+      <li class="page-item disabled">
+        <span class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
+      </li>
+      <li class="page-item @(ViewBag.Count <= 8 ? "disabled" : "")">
+        <span class="page-link" id="books-page-next"><i class="fa fa-caret-right"></i></a>
+      </li>
+    </ul>
+  </nav>
+  @Html.Partial("AddBook.cshtml", new Book())
+  @Html.Partial("BookDetails.cshtml", new Book())
 </div>
-<nav class="mt-3 p-bottom">
-  <ul class="pagination justify-content-center">
-    <li class="page-item disabled">
-      <span class="page-link" id="books-page-prev"><i class="fa fa-caret-left"></i></a>
-    </li>
-    <li class="page-item @(ViewBag.Count <= 8 ? "disabled" : "")">
-      <span class="page-link" id="books-page-next"><i class="fa fa-caret-right"></i></a>
-    </li>
-  </ul>
-</nav>
-@Html.Partial("AddBook.cshtml", new Book())
-@Html.Partial("BookDetails.cshtml")
