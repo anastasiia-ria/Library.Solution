@@ -59,7 +59,7 @@ An application to track location and status of user’s books in their home libr
   ```
    ~/Desktop/Library.Solution/Library $ dotnet run
   ```
-- Visit [http://localhost:5000](http://localhost:5000) to try this application
+- Visit [http://library.dlinds.com:6001/](http://library.dlinds.com:6001/) to try this application
 
 ## Known Bugs
 
